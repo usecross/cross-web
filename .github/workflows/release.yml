@@ -1,15 +1,13 @@
-name: AutoPub Workflow
+name: AutoPub Release Workflow
 
 on:
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened, labeled, unlabeled]
-  pull_request_review:
-    types: [submitted, edited, dismissed]
   push:
     branches: [main]
 
 permissions:
+  contents: write
+  id-token: write
+  issues: write
   pull-requests: write
 
 jobs:
@@ -27,7 +25,7 @@ jobs:
       - name: Check
         id: check
         run: |
-          if uvx --from autopub==1.0.0a46 --with pygithub autopub check; then
+          if uvx --from autopub==1.0.0a47 --with pygithub autopub check; then
             echo "has_release=true" >> $GITHUB_OUTPUT
           else
             echo "has_release=false" >> $GITHUB_OUTPUT
@@ -78,7 +76,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Download .autopub
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: autopub-data
           path: .autopub
@@ -86,11 +84,11 @@ jobs:
       - name: Build and publish
         run: |
           echo "✨ Preparing..."
-          uvx --from autopub==1.0.0a46 --with pygithub autopub prepare
+          uvx --from autopub==1.0.0a47 --with pygithub autopub prepare
           echo "✨ Building..."
-          uvx --from autopub==1.0.0a46 --with pygithub autopub build
+          uvx --from autopub==1.0.0a47 --with pygithub autopub build
           echo "✨ Publishing..."
-          uvx --from autopub==1.0.0a46 --with pygithub autopub publish
+          uvx --from autopub==1.0.0a47 --with pygithub autopub publish
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
