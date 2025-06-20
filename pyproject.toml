@@ -39,3 +39,6 @@ sort = "-Cover"
 
 [tool.coverage.html]
 show_contexts = true
+
+[tool.autopub]
+plugins = ["autopub.plugins.github", "autopub.plugins.uv"]
