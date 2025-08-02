@@ -16,7 +16,7 @@ STARLETTE_VERSIONS = ["0.37", "0.38", "0.39", "0.40", "0.41"]
 PYDANTIC_VERSIONS = ["2.11", "2.12"]
 
 
-@nox.session(python=PYTHON_VERSIONS)
+@nox.session(python=PYTHON_VERSIONS, tags=["tests"])
 def tests(session: nox.Session) -> None:
     """Run the complete test suite with all dependencies."""
     session.install("-e", ".[dev]")
@@ -29,7 +29,7 @@ def tests(session: nox.Session) -> None:
     )
 
 
-@nox.session(python=["3.12"], name="tests-coverage")
+@nox.session(python=["3.12"], name="tests-coverage", tags=["tests"])
 def tests_coverage(session: nox.Session) -> None:
     """Run tests with coverage reporting."""
     session.install("-e", ".[dev]")
@@ -43,7 +43,7 @@ def tests_coverage(session: nox.Session) -> None:
     )
 
 
-@nox.session(python=["3.9", "3.12"])
+@nox.session(python=["3.9", "3.12"], tags=["tests"])
 @nox.parametrize("django", DJANGO_VERSIONS)
 def tests_django(session: nox.Session, django: str) -> None:
     """Test Django adapter with different Django versions."""
@@ -53,7 +53,7 @@ def tests_django(session: nox.Session, django: str) -> None:
     session.run("pytest", "tests/request/test_adapters.py::TestDjangoAdapters", "-v")
 
 
-@nox.session(python=["3.9", "3.12"])
+@nox.session(python=["3.9", "3.12"], tags=["tests"])
 @nox.parametrize("flask", FLASK_VERSIONS)
 def tests_flask(session: nox.Session, flask: str) -> None:
     """Test Flask adapter with different Flask versions."""
@@ -63,7 +63,7 @@ def tests_flask(session: nox.Session, flask: str) -> None:
     session.run("pytest", "tests/request/test_adapters.py::TestFlaskAdapters", "-v")
 
 
-@nox.session(python=["3.9", "3.12"])
+@nox.session(python=["3.9", "3.12"], tags=["tests"])
 @nox.parametrize("starlette", STARLETTE_VERSIONS)
 def tests_starlette(session: nox.Session, starlette: str) -> None:
     """Test Starlette adapter with different Starlette versions."""
@@ -73,7 +73,7 @@ def tests_starlette(session: nox.Session, starlette: str) -> None:
     session.run("pytest", "tests/request/test_starlette.py", "-v")
 
 
-@nox.session(python=["3.12"])
+@nox.session(python=["3.12"], tags=["tests"])
 @nox.parametrize("pydantic", PYDANTIC_VERSIONS)
 def tests_pydantic(session: nox.Session, pydantic: str) -> None:
     """Test with different Pydantic versions."""
@@ -83,7 +83,7 @@ def tests_pydantic(session: nox.Session, pydantic: str) -> None:
     session.run("pytest", "tests/", "-v")
 
 
-@nox.session(python=["3.12"], name="tests-frameworks")
+@nox.session(python=["3.12"], name="tests-frameworks", tags=["tests"])
 def tests_frameworks(session: nox.Session) -> None:
     """Test all framework adapters."""
     # Install base package
@@ -109,7 +109,7 @@ def tests_frameworks(session: nox.Session) -> None:
         )
 
 
-@nox.session(python=["3.12"], name="tests-fastapi")
+@nox.session(python=["3.12"], name="tests-fastapi", tags=["tests"])
 def tests_fastapi(session: nox.Session) -> None:
     """Test FastAPI integration."""
     session.install("-e", ".")
@@ -141,7 +141,7 @@ def mypy(session: nox.Session) -> None:
     session.run("mypy", "src")
 
 
-@nox.session(python=["3.12"], name="tests-minimal")
+@nox.session(python=["3.12"], name="tests-minimal", tags=["tests"])
 def tests_minimal(session: nox.Session) -> None:
     """Test with minimal dependencies (only pydantic)."""
     session.install("-e", ".")
