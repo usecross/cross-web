@@ -11,7 +11,6 @@ from .request._sanic import SanicHTTPRequestAdapter
 from .request._starlette import StarletteRequestAdapter
 from .request._testing import TestingRequestAdapter
 from .response import Cookie, Response
-from .utils import parse_content_type
 
 __all__ = [
     "AiohttpHTTPRequestAdapter",
@@ -31,5 +30,4 @@ __all__ = [
     "StarletteRequestAdapter",
     "SyncHTTPRequestAdapter",
     "TestingRequestAdapter",
-    "parse_content_type",
 ]
