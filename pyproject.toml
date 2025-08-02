@@ -24,6 +24,19 @@ dev = [
     "starlette>=0.46.1",
     "inline-snapshot>=0.20.10",
     "coverage[toml]>=7.8.0",
+    "nox>=2024.10.9",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    # Framework dependencies for testing
+    "django>=4.2",
+    "flask>=2.3",
+    "werkzeug>=2.3",
+    "sanic>=23.0",
+    "aiohttp>=3.9",
+    "yarl>=1.9",
+    "quart>=0.19",
+    "chalice>=1.29",
+    "litestar>=2.0",
 ]
 
 [tool.inline-snapshot]

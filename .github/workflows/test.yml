@@ -1,0 +1,163 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-jobs:
+    name: Generate test matrix
+    runs-on: ubuntu-latest
+    outputs:
+      sessions: ${{ steps.set-matrix.outputs.sessions }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          
+      - name: Install Python
+        run: uv python install 3.12
+        
+      - name: Install nox
+        run: uv tool install nox
+        
+      - name: Generate test matrix
+        id: set-matrix
+        run: |
+          # Get all test sessions
+          sessions=$(uvx nox -l --json | jq -c '[
+            .[] | 
+            select(.name | startswith("tests")) |
+            {
+              session: .name,
+              python: .python,
+              call_spec: .call_spec
+            }
+          ]')
+          
+          echo "sessions=${sessions}" >> $GITHUB_OUTPUT
+
+  tests:
+    name: ${{ matrix.session.session }} (${{ matrix.session.python || '3.12' }})
+    needs: generate-jobs
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        session: ${{ fromJson(needs.generate-jobs.outputs.sessions) }}
+        include:
+          # Add Windows and macOS for main test suite
+          - os: windows-latest
+            session:
+              session: tests
+              python: "3.12"
+          - os: macos-latest
+            session:
+              session: tests
+              python: "3.12"
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          
+      - name: Install Python
+        run: uv python install ${{ matrix.session.python || '3.12' }}
+        
+      - name: Install nox
+        run: uv tool install nox
+        
+      - name: Run tests
+        run: |
+          if [ -n "${{ matrix.session.call_spec }}" ]; then
+            uvx nox -s "${{ matrix.session.session }}-${{ matrix.session.call_spec }}"
+          else
+            uvx nox -s "${{ matrix.session.session }}"
+          fi
+        shell: bash
+        
+      - name: Upload coverage
+        if: matrix.session.session == 'tests-coverage'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.os }}-${{ matrix.session.python }}
+          path: coverage.xml
+
+  coverage:
+    name: Upload coverage
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-*
+          merge-multiple: true
+          
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          
+      - name: Install Python
+        run: uv python install 3.12
+        
+      - name: Install nox
+        run: uv tool install nox
+        
+      - name: Run lint
+        run: uvx nox -s lint
+        
+      - name: Run mypy
+        run: uvx nox -s mypy
+        continue-on-error: true  # Allow mypy failures for now
+
+  # Run a quick test to ensure package works with minimal dependencies
+  test-minimal:
+    name: Test minimal installation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          
+      - name: Install Python
+        run: uv python install 3.12
+        
+      - name: Install nox
+        run: uv tool install nox
+        
+      - name: Run minimal tests
+        run: uvx nox -s tests-minimal
