@@ -13,10 +13,12 @@ async def test_starlette_adapter():
     from starlette.testclient import TestClient
 
     adapter_result = None
+    body_result = None
 
     async def handler(request):
-        nonlocal adapter_result
+        nonlocal adapter_result, body_result
         adapter_result = StarletteRequestAdapter(request)
+        body_result = await adapter_result.get_body()
         return JSONResponse({"status": "ok"})
 
     app = Starlette(routes=[Route("/test", handler, methods=["POST"])])
@@ -32,6 +34,7 @@ async def test_starlette_adapter():
         assert adapter_result.content_type == "application/json"
         assert "test" in str(adapter_result.url)
         assert dict(adapter_result.cookies) == {"session": "123"}
+        assert body_result == b'{"key":"value"}'  # JSON encoding removes spaces
 
 
 @pytest.mark.asyncio
@@ -43,10 +46,12 @@ async def test_starlette_adapter_form_data():
     import io
 
     adapter_result = None
+    form_data_result = None
 
     async def handler(request):
-        nonlocal adapter_result
+        nonlocal adapter_result, form_data_result
         adapter_result = StarletteRequestAdapter(request)
+        form_data_result = await adapter_result.get_form_data()
         return JSONResponse({"status": "ok"})
 
     app = Starlette(routes=[Route("/test", handler, methods=["POST"])])
@@ -66,3 +71,8 @@ async def test_starlette_adapter_form_data():
         assert adapter_result.content_type.startswith("multipart/form-data")
         assert "test" in str(adapter_result.url)
         assert dict(adapter_result.cookies) == {"session": "123"}
+        
+        # Check form data was retrieved
+        assert form_data_result is not None
+        assert "form" in form_data_result.form
+        assert "file" in form_data_result.files
