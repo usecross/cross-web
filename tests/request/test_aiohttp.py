@@ -2,6 +2,8 @@ import pytest
 
 from lia import AiohttpHTTPRequestAdapter
 
+pytestmark = [pytest.mark.aiohttp]
+
 
 @pytest.mark.asyncio
 async def test_aiohttp_adapter_json() -> None:
