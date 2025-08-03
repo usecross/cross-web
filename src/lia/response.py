@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Literal, Mapping, Self
+from typing import TYPE_CHECKING, Any, Literal, Mapping
+from typing_extensions import Self
 from urllib.parse import urlencode
 
 if TYPE_CHECKING:

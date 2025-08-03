@@ -21,19 +21,14 @@ def tests(session: nox.Session) -> None:
     session.run_install(
         "uv",
         "sync",
-        "--extra=dev",
-        "--extra=integrations",
+        "--dev",
+        "--group",
+        "integrations",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    session.run(
-        "pytest",
-        "--cov=src",
-        "--cov-report=xml",
-        "--cov-report=term-missing",
-        "-v",
-    )
+    session.run("pytest", "-v")
 
 
 @nox.session(python=["3.9", "3.12"], tags=["tests"])
@@ -43,8 +38,9 @@ def tests_django(session: nox.Session, django: str) -> None:
     session.run_install(
         "uv",
         "sync",
-        "--extra=dev",
-        "--extra=integrations",
+        "--dev",
+        "--group",
+        "integrations",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -60,8 +56,9 @@ def tests_flask(session: nox.Session, flask: str) -> None:
     session.run_install(
         "uv",
         "sync",
-        "--extra=dev",
-        "--extra=integrations",
+        "--dev",
+        "--group",
+        "integrations",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -77,8 +74,9 @@ def tests_starlette(session: nox.Session, starlette: str) -> None:
     session.run_install(
         "uv",
         "sync",
-        "--extra=dev",
-        "--extra=integrations",
+        "--dev",
+        "--group",
+        "integrations",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -94,7 +92,7 @@ def tests_frameworks(session: nox.Session) -> None:
     session.run_install(
         "uv",
         "sync",
-        "--extra=dev",
+        "--dev",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -121,7 +119,7 @@ def tests_fastapi(session: nox.Session) -> None:
     session.run_install(
         "uv",
         "sync",
-        "--extra=dev",
+        "--dev",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -135,7 +133,7 @@ def lint(session: nox.Session) -> None:
     session.run_install(
         "uv",
         "sync",
-        "--extra=dev",
+        "--dev",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
