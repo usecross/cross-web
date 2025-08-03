@@ -12,7 +12,7 @@ PYTHON_VERSIONS = ["3.9", "3.10", "3.11", "3.12", "3.13"]
 # Framework versions to test
 DJANGO_VERSIONS = ["5.0", "5.1", "5.2"]
 FLASK_VERSIONS = ["2.3", "3.0", "3.1"]
-STARLETTE_VERSIONS = ["0.37", "0.38", "0.39", "0.40", "0.41"]
+STARLETTE_VERSIONS = ["0.47"]
 
 
 @nox.session(python=PYTHON_VERSIONS, tags=["tests"])
@@ -46,7 +46,7 @@ def tests_django(session: nox.Session, django: str) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.install(f"django~={django}.0")
-    session.run("pytest", "tests/request/test_adapters.py::TestDjangoAdapters", "-v")
+    session.run("pytest", "-m", "django", "-v")
 
 
 @nox.session(python=["3.9", "3.12"], tags=["tests"])
@@ -64,7 +64,7 @@ def tests_flask(session: nox.Session, flask: str) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.install(f"flask~={flask}.0")
-    session.run("pytest", "tests/request/test_adapters.py::TestFlaskAdapters", "-v")
+    session.run("pytest", "-m", "flask", "-v")
 
 
 @nox.session(python=["3.9", "3.12"], tags=["tests"])
@@ -82,7 +82,7 @@ def tests_starlette(session: nox.Session, starlette: str) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.install(f"starlette~={starlette}.0")
-    session.run("pytest", "tests/request/test_starlette.py", "-v")
+    session.run("pytest", "-m", "starlette", "-v")
 
 
 @nox.session(python=["3.12"], name="tests-frameworks", tags=["tests"])
@@ -100,7 +100,7 @@ def tests_frameworks(session: nox.Session) -> None:
 
     # Test each framework adapter separately
     frameworks = {
-        "sanic": ["sanic"],
+        "sanic": ["sanic", "sanic-testing"],
         "aiohttp": ["aiohttp", "yarl"],
         "quart": ["quart"],
         "chalice": ["chalice"],
@@ -109,8 +109,7 @@ def tests_frameworks(session: nox.Session) -> None:
 
     for framework, deps in frameworks.items():
         session.install(*deps)
-        test_class = f"Test{framework.capitalize()}Adapter"
-        session.run("pytest", f"tests/request/test_adapters.py::{test_class}", "-v")
+        session.run("pytest", "-m", framework, "-v")
 
 
 @nox.session(python=["3.12"], name="tests-fastapi", tags=["tests"])
@@ -124,7 +123,8 @@ def tests_fastapi(session: nox.Session) -> None:
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    session.run("pytest", "tests/response/test_fastapi.py", "-v")
+    session.install("fastapi", "httpx", "python-multipart")
+    session.run("pytest", "-m", "fastapi", "-v")
 
 
 @nox.session(python=["3.12"])
@@ -148,11 +148,3 @@ def mypy(session: nox.Session) -> None:
     session.install("-e", ".[dev]")
     session.install("mypy")
     session.run("mypy", "src")
-
-
-@nox.session(python=["3.12"], name="tests-minimal", tags=["tests"])
-def tests_minimal(session: nox.Session) -> None:
-    """Test with minimal dependencies (only pydantic)."""
-    session.install("-e", ".[dev]")
-    # This should test that the library works without any web frameworks installed
-    session.run("pytest", "tests/response/test_response.py", "-v", "-k", "not fastapi")

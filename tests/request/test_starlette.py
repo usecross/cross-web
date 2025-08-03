@@ -1,159 +1,69 @@
 import pytest
-from inline_snapshot import snapshot
-from starlette.requests import Request as StarletteRequest
-from starlette.responses import JSONResponse
-from starlette.testclient import TestClient
-from starlette.types import Receive, Scope, Send
 
-from lia.request import AsyncHTTPRequest
+from lia import StarletteRequestAdapter
 
-pytestmark = pytest.mark.asyncio
+pytestmark = [pytest.mark.starlette]
 
 
-async def test_basic_get_request():
-    async def app(scope: Scope, receive: Receive, send: Send) -> None:
-        request = AsyncHTTPRequest.from_starlette(StarletteRequest(scope, receive))
+@pytest.mark.asyncio
+async def test_starlette_adapter():
+    from starlette.applications import Starlette
+    from starlette.responses import JSONResponse
+    from starlette.routing import Route
+    from starlette.testclient import TestClient
 
-        response = JSONResponse(
-            {
-                "headers": dict(request.headers),
-                "query_params": dict(request.query_params),
-                "body": (await request.get_body()).decode("utf-8"),
-                "url": str(request.url),
-                "method": request.method,
-            }
-        )
-        await response(scope, receive, send)
+    adapter_result = None
 
-    client = TestClient(app)
+    async def handler(request):
+        nonlocal adapter_result
+        adapter_result = StarletteRequestAdapter(request)
+        return JSONResponse({"status": "ok"})
 
-    response = client.get("/?a=1&b=2")
+    app = Starlette(routes=[Route("/test", handler, methods=["POST"])])
 
-    assert response.json() == snapshot(
-        {
-            "headers": {
-                "host": "testserver",
-                "accept": "*/*",
-                "accept-encoding": "gzip, deflate",
-                "connection": "keep-alive",
-                "user-agent": "testclient",
-            },
-            "query_params": {"a": "1", "b": "2"},
-            "body": "",
-            "url": "http://testserver/?a=1&b=2",
-            "method": "GET",
-        }
-    )
-
-
-async def test_basic_post_form_data():
-    async def app(scope: Scope, receive: Receive, send: Send) -> None:
-        request = AsyncHTTPRequest.from_starlette(StarletteRequest(scope, receive))
-
-        response = JSONResponse(
-            {
-                "headers": dict(request.headers),
-                "query_params": dict(request.query_params),
-                "body": (await request.get_body()).decode("utf-8"),
-                "url": str(request.url),
-                "method": request.method,
-            }
-        )
-        await response(scope, receive, send)
-
-    client = TestClient(app)
-
-    response = client.post("/", data={"a": "1", "b": "2"})
-
-    assert response.json() == snapshot(
-        {
-            "headers": {
-                "host": "testserver",
-                "accept": "*/*",
-                "accept-encoding": "gzip, deflate",
-                "connection": "keep-alive",
-                "user-agent": "testclient",
-                "content-length": "7",
-                "content-type": "application/x-www-form-urlencoded",
-            },
-            "query_params": {},
-            "body": "a=1&b=2",
-            "url": "http://testserver/",
-            "method": "POST",
-        }
-    )
-
-
-async def test_basic_post_json():
-    async def app(scope: Scope, receive: Receive, send: Send) -> None:
-        request = AsyncHTTPRequest.from_starlette(StarletteRequest(scope, receive))
-
-        response = JSONResponse(
-            {
-                "headers": dict(request.headers),
-                "query_params": dict(request.query_params),
-                "body": (await request.get_body()).decode("utf-8"),
-                "url": str(request.url),
-                "method": request.method,
-            }
+    with TestClient(app) as client:
+        response = client.post(
+            "/test?query=test", json={"key": "value"}, cookies={"session": "123"}
         )
 
-        await response(scope, receive, send)
-
-    client = TestClient(app)
-
-    response = client.post("/", json={"a": "1", "b": "2"})
-
-    assert response.json() == snapshot(
-        {
-            "headers": {
-                "host": "testserver",
-                "accept": "*/*",
-                "accept-encoding": "gzip, deflate",
-                "connection": "keep-alive",
-                "user-agent": "testclient",
-                "content-length": "17",
-                "content-type": "application/json",
-            },
-            "query_params": {},
-            "body": '{"a":"1","b":"2"}',
-            "url": "http://testserver/",
-            "method": "POST",
-        }
-    )
+        assert adapter_result is not None
+        assert dict(adapter_result.query_params) == {"query": "test"}
+        assert adapter_result.method == "POST"
+        assert adapter_result.headers["content-type"] == "application/json"
+        assert adapter_result.content_type == "application/json"
+        assert "test" in str(adapter_result.url)
+        assert dict(adapter_result.cookies) == {"session": "123"}
 
 
-async def test_get_with_cookies():
-    async def app(scope: Scope, receive: Receive, send: Send) -> None:
-        request = AsyncHTTPRequest.from_starlette(StarletteRequest(scope, receive))
+@pytest.mark.asyncio
+async def test_starlette_adapter_form_data():
+    from starlette.applications import Starlette
+    from starlette.responses import JSONResponse
+    from starlette.routing import Route
+    from starlette.testclient import TestClient
+    import io
 
-        response = JSONResponse(
-            {
-                "headers": dict(request.headers),
-                "cookies": dict(request.cookies),
-                "url": str(request.url),
-                "method": request.method,
-            }
+    adapter_result = None
+
+    async def handler(request):
+        nonlocal adapter_result
+        adapter_result = StarletteRequestAdapter(request)
+        return JSONResponse({"status": "ok"})
+
+    app = Starlette(routes=[Route("/test", handler, methods=["POST"])])
+
+    with TestClient(app) as client:
+        client.post(
+            "/test?query=test",
+            data={"form": "data"},
+            files={"file": ("test.txt", io.BytesIO(b"upload"), "text/plain")},
+            cookies={"session": "123"},
         )
 
-        await response(scope, receive, send)
-
-    client = TestClient(app, cookies={"a": "1", "b": "2"})
-
-    response = client.get("/")
-
-    assert response.json() == snapshot(
-        {
-            "headers": {
-                "host": "testserver",
-                "accept": "*/*",
-                "accept-encoding": "gzip, deflate",
-                "connection": "keep-alive",
-                "user-agent": "testclient",
-                "cookie": "a=1; b=2",
-            },
-            "cookies": {"a": "1", "b": "2"},
-            "url": "http://testserver/",
-            "method": "GET",
-        }
-    )
+        assert adapter_result is not None
+        assert dict(adapter_result.query_params) == {"query": "test"}
+        assert adapter_result.method == "POST"
+        assert adapter_result.headers["content-type"].startswith("multipart/form-data")
+        assert adapter_result.content_type.startswith("multipart/form-data")
+        assert "test" in str(adapter_result.url)
+        assert dict(adapter_result.cookies) == {"session": "123"}

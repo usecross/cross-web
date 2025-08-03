@@ -11,15 +11,49 @@ if TYPE_CHECKING:
 
 
 class AiohttpHTTPRequestAdapter(AsyncHTTPRequestAdapter):
-    def __init__(self, request: web.Request) -> None:
+    def __init__(self, request: web.Request, body: Optional[bytes] = None, form_data: Optional[FormData] = None) -> None:
         self.request = request
+        self._body = body
+        self._form_data = form_data
+
+    @classmethod
+    async def create(cls, request: web.Request) -> "AiohttpHTTPRequestAdapter":
+        """Create an adapter and pre-read the body to avoid PayloadAccessError"""
+        content_type = request.headers.get("content-type", "")
+        form_data = None
+        body = None
+        
+        if content_type.startswith("multipart/form-data"):
+            # Pre-process multipart data
+            reader = await request.multipart()
+            data: dict[str, Any] = {}
+            files: dict[str, Any] = {}
+
+            while field := await reader.next():
+                from aiohttp.multipart import BodyPartReader
+                assert isinstance(field, BodyPartReader)
+                assert field.name
+
+                if field.filename:
+                    files[field.name] = BytesIO(await field.read(decode=False))
+                else:
+                    data[field.name] = await field.text()
+
+            form_data = FormData(files=files, form=data)
+        else:
+            # For non-multipart requests, read the body
+            body = await request.read()
+            
+        return cls(request, body, form_data)
 
     @property
     def query_params(self) -> QueryParams:
         return self.request.query.copy()  # type: ignore[attr-defined]
 
     async def get_body(self) -> bytes:
-        return await self.request.content.read()
+        if self._body is None:
+            self._body = await self.request.read()
+        return self._body
 
     @property
     def method(self) -> HTTPMethod:
@@ -30,21 +64,16 @@ class AiohttpHTTPRequestAdapter(AsyncHTTPRequestAdapter):
         return self.request.headers
 
     async def get_form_data(self) -> FormData:
-        reader = await self.request.multipart()
-
-        data: dict[str, Any] = {}
-        files: dict[str, Any] = {}
-
-        while field := await reader.next():
-            assert isinstance(field, BodyPartReader)
-            assert field.name
-
-            if field.filename:
-                files[field.name] = BytesIO(await field.read(decode=False))
-            else:
-                data[field.name] = await field.text()
-
-        return FormData(files=files, form=data)
+        if self._form_data is not None:
+            return self._form_data
+            
+        if self.content_type and self.content_type.startswith("multipart/form-data"):
+            # This should not happen if create() was used
+            raise RuntimeError("Multipart data should be pre-processed in create()")
+        else:
+            # For URL-encoded form data
+            post_data = await self.request.post()
+            return FormData(files={}, form=dict(post_data))
 
     @property
     def content_type(self) -> Optional[str]:

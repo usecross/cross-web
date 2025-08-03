@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Mapping, Optional
+from typing import TYPE_CHECKING, Mapping, Optional, Any
 
 from typing_extensions import Self
 
