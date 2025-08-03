@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Literal, Mapping
+from typing import TYPE_CHECKING, Any, Literal, Mapping, cast
 from typing_extensions import Self
 from urllib.parse import urlencode
 
@@ -52,7 +52,7 @@ class Response:
         if self.body is None:
             return None
 
-        return json.loads(self.body)
+        return cast(dict[str, Any], json.loads(self.body))
 
     def to_fastapi(self) -> FastAPIResponse:
         from fastapi import Response as FastAPIResponse

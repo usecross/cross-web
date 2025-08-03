@@ -20,11 +20,11 @@ class DjangoHTTPRequestAdapter(SyncHTTPRequestAdapter):
 
     @property
     def query_params(self) -> QueryParams:
-        return self.request.GET.dict()
+        return cast(QueryParams, self.request.GET.dict())
 
     @property
     def body(self) -> Union[str, bytes]:
-        return self.request.body.decode()
+        return cast(Union[str, bytes], self.request.body.decode())
 
     @property
     def method(self) -> HTTPMethod:
@@ -34,33 +34,33 @@ class DjangoHTTPRequestAdapter(SyncHTTPRequestAdapter):
 
     @property
     def headers(self) -> Mapping[str, str]:
-        return self.request.headers
+        return cast(Mapping[str, str], self.request.headers)
 
     @property
     def post_data(self) -> Mapping[str, Union[str, bytes]]:
-        return self.request.POST
+        return cast(Mapping[str, Union[str, bytes]], self.request.POST)
 
     @property
     def files(self) -> Mapping[str, Any]:
-        return self.request.FILES
+        return cast(Mapping[str, Any], self.request.FILES)
 
     def get_form_data(self) -> FormData:
         return FormData(
-            files=self.request.FILES,
-            form=self.request.POST,
+            files=cast(Mapping[str, Any], self.request.FILES),
+            form=cast(Mapping[str, Union[str, bytes]], self.request.POST),
         )
 
     @property
     def content_type(self) -> Optional[str]:
-        return self.request.content_type
+        return cast(Optional[str], self.request.content_type)
 
     @property
     def url(self) -> str:
-        return self.request.build_absolute_uri()
+        return cast(str, self.request.build_absolute_uri())
 
     @property
     def cookies(self) -> Mapping[str, str]:
-        return self.request.COOKIES
+        return cast(Mapping[str, str], self.request.COOKIES)
 
 
 class AsyncDjangoHTTPRequestAdapter(AsyncHTTPRequestAdapter):
@@ -69,7 +69,7 @@ class AsyncDjangoHTTPRequestAdapter(AsyncHTTPRequestAdapter):
 
     @property
     def query_params(self) -> QueryParams:
-        return self.request.GET.dict()
+        return cast(QueryParams, self.request.GET.dict())
 
     @property
     def method(self) -> HTTPMethod:
@@ -79,25 +79,25 @@ class AsyncDjangoHTTPRequestAdapter(AsyncHTTPRequestAdapter):
 
     @property
     def headers(self) -> Mapping[str, str]:
-        return self.request.headers
+        return cast(Mapping[str, str], self.request.headers)
 
     @property
     def content_type(self) -> Optional[str]:
         return self.headers.get("Content-type")
 
     async def get_body(self) -> bytes:
-        return self.request.body
+        return cast(bytes, self.request.body)
 
     async def get_form_data(self) -> FormData:
         return FormData(
-            files=self.request.FILES,
-            form=self.request.POST,
+            files=cast(Mapping[str, Any], self.request.FILES),
+            form=cast(Mapping[str, Union[str, bytes]], self.request.POST),
         )
 
     @property
     def url(self) -> str:
-        return self.request.build_absolute_uri()
+        return cast(str, self.request.build_absolute_uri())
 
     @property
     def cookies(self) -> Mapping[str, str]:
-        return self.request.COOKIES
+        return cast(Mapping[str, str], self.request.COOKIES)

@@ -61,6 +61,18 @@ skip_empty = true
 [tool.autopub]
 plugins = ["autopub.plugins.github", "autopub.plugins.uv"]
 
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "django.*",
+]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 markers = [
     "aiohttp: marks tests for aiohttp framework",

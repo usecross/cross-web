@@ -146,8 +146,16 @@ def lint(session: nox.Session) -> None:
 @nox.session(python=["3.12"])
 def mypy(session: nox.Session) -> None:
     """Run type checking with mypy."""
-    session.install("-e", ".[dev]")
-    session.install("mypy")
+    session.run_install(
+        "uv",
+        "sync",
+        "--dev",
+        "--group",
+        "integrations",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
     session.run("mypy", "src")
 
 

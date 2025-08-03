@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Mapping, Optional
+from typing import Any, Mapping, Optional
 
 from ._base import AsyncHTTPRequestAdapter, FormData, HTTPMethod, QueryParams
 
@@ -19,7 +19,7 @@ class TestingRequestAdapter(AsyncHTTPRequestAdapter):
         url: str = "http://testserver/",
         cookies: Mapping[str, str] | None = None,
         form_data: FormData | None = None,
-        json: dict | None = None,
+        json: dict[str, Any] | None = None,
     ) -> None:
         self._method = method
         self._query_params = query_params or {}
