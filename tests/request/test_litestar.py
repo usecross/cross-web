@@ -21,8 +21,9 @@ async def test_litestar_adapter():
     app = Litestar([handler])
 
     with TestClient(app=app) as client:
+        client.cookies["session"] = "123"
         response = client.post(
-            "/test?query=test", json={"key": "value"}, cookies={"session": "123"}
+            "/test?query=test", json={"key": "value"}
         )
 
         assert adapter_result is not None
@@ -51,11 +52,11 @@ async def test_litestar_adapter_form_data():
     app = Litestar([handler])
 
     with TestClient(app=app) as client:
+        client.cookies["session"] = "123"
         response = client.post(
             "/test?query=test",
             data={"form": "data"},
             files={"file": ("test.txt", b"upload")},
-            cookies={"session": "123"},
         )
 
         assert adapter_result is not None

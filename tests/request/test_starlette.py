@@ -22,8 +22,9 @@ async def test_starlette_adapter():
     app = Starlette(routes=[Route("/test", handler, methods=["POST"])])
 
     with TestClient(app) as client:
+        client.cookies.set("session", "123")
         response = client.post(
-            "/test?query=test", json={"key": "value"}, cookies={"session": "123"}
+            "/test?query=test", json={"key": "value"}
         )
 
         assert adapter_result is not None
@@ -53,11 +54,11 @@ async def test_starlette_adapter_form_data():
     app = Starlette(routes=[Route("/test", handler, methods=["POST"])])
 
     with TestClient(app) as client:
+        client.cookies.set("session", "123")
         client.post(
             "/test?query=test",
             data={"form": "data"},
             files={"file": ("test.txt", io.BytesIO(b"upload"), "text/plain")},
-            cookies={"session": "123"},
         )
 
         assert adapter_result is not None

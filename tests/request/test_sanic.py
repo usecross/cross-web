@@ -63,8 +63,9 @@ async def test_sanic_adapter_json(app):
         return text("OK")
 
     # Test with JSON data
+    app.asgi_client.cookies["session"] = "123"
     _, response = await app.asgi_client.post(
-        "/test?query=test", json={"key": "value"}, cookies={"session": "123"}
+        "/test?query=test", json={"key": "value"}
     )
 
     assert adapter_result is not None
