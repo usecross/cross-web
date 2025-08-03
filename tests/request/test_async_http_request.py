@@ -76,37 +76,158 @@ async def test_from_form_data_get_form_data():
 
 
 # Test framework-specific constructors
-# These tests verify the methods exist and can be called
 def test_from_starlette():
-    # We can't test this without a real Starlette request
-    # Just verify the method exists
-    assert hasattr(AsyncHTTPRequest, 'from_starlette')
+    """Test creating AsyncHTTPRequest from Starlette request."""
+    from unittest.mock import Mock
+    
+    # Mock a Starlette request
+    mock_request = Mock()
+    mock_request.method = "GET"
+    mock_request.url.path = "/test"
+    mock_request.query_params = {}
+    mock_request.headers = {}
+    
+    # Create AsyncHTTPRequest from Starlette
+    request = AsyncHTTPRequest.from_starlette(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # Verify the adapter was created correctly
+    assert request._adapter.__class__.__name__ == "StarletteRequestAdapter"
 
 
 def test_from_fastapi():
-    # FastAPI uses Starlette requests, so this should be the same
-    assert hasattr(AsyncHTTPRequest, 'from_fastapi')
+    """Test creating AsyncHTTPRequest from FastAPI request (uses Starlette)."""
+    from unittest.mock import Mock
+    
+    # Mock a FastAPI/Starlette request
+    mock_request = Mock()
+    mock_request.method = "POST"
+    mock_request.url.path = "/api"
+    mock_request.query_params = {}
+    mock_request.headers = {}
+    
+    # Create AsyncHTTPRequest from FastAPI
+    request = AsyncHTTPRequest.from_fastapi(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # FastAPI uses Starlette adapter
+    assert request._adapter.__class__.__name__ == "StarletteRequestAdapter"
 
 
 def test_from_django():
-    assert hasattr(AsyncHTTPRequest, 'from_django')
+    """Test creating AsyncHTTPRequest from Django request."""
+    from unittest.mock import Mock
+    
+    # Mock a Django request
+    mock_request = Mock()
+    mock_request.method = "GET"
+    mock_request.GET = {}
+    mock_request.META = {}
+    mock_request.body = b""
+    
+    # Create AsyncHTTPRequest from Django
+    request = AsyncHTTPRequest.from_django(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # Verify the adapter was created correctly
+    assert request._adapter.__class__.__name__ == "AsyncDjangoHTTPRequestAdapter"
 
 
 def test_from_flask():
-    assert hasattr(AsyncHTTPRequest, 'from_flask')
+    """Test creating AsyncHTTPRequest from Flask request."""
+    from unittest.mock import Mock
+    
+    # Mock a Flask request
+    mock_request = Mock()
+    mock_request.method = "POST"
+    mock_request.args = {}
+    mock_request.headers = {}
+    mock_request.get_data = Mock(return_value=b"test")
+    
+    # Create AsyncHTTPRequest from Flask
+    request = AsyncHTTPRequest.from_flask(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # Verify the adapter was created correctly
+    assert request._adapter.__class__.__name__ == "AsyncFlaskHTTPRequestAdapter"
 
 
 def test_from_sanic():
-    assert hasattr(AsyncHTTPRequest, 'from_sanic')
+    """Test creating AsyncHTTPRequest from Sanic request."""
+    from unittest.mock import Mock
+    
+    # Mock a Sanic request
+    mock_request = Mock()
+    mock_request.method = "PUT"
+    mock_request.args = {}
+    mock_request.headers = {}
+    mock_request.body = b""
+    
+    # Create AsyncHTTPRequest from Sanic
+    request = AsyncHTTPRequest.from_sanic(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # Verify the adapter was created correctly
+    assert request._adapter.__class__.__name__ == "SanicHTTPRequestAdapter"
 
 
 def test_from_aiohttp():
-    assert hasattr(AsyncHTTPRequest, 'from_aiohttp')
+    """Test creating AsyncHTTPRequest from aiohttp request."""
+    from unittest.mock import Mock
+    
+    # Mock an aiohttp request
+    mock_request = Mock()
+    mock_request.method = "DELETE"
+    mock_request.query = {}
+    mock_request.headers = {}
+    
+    # Create AsyncHTTPRequest from aiohttp
+    request = AsyncHTTPRequest.from_aiohttp(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # Verify the adapter was created correctly
+    assert request._adapter.__class__.__name__ == "AiohttpHTTPRequestAdapter"
 
 
 def test_from_quart():
-    assert hasattr(AsyncHTTPRequest, 'from_quart')
+    """Test creating AsyncHTTPRequest from Quart request."""
+    from unittest.mock import Mock
+    
+    # Mock a Quart request
+    mock_request = Mock()
+    mock_request.method = "PATCH"
+    mock_request.args = {}
+    mock_request.headers = {}
+    
+    # Create AsyncHTTPRequest from Quart
+    request = AsyncHTTPRequest.from_quart(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # Verify the adapter was created correctly
+    assert request._adapter.__class__.__name__ == "QuartHTTPRequestAdapter"
 
 
 def test_from_litestar():
-    assert hasattr(AsyncHTTPRequest, 'from_litestar')
+    """Test creating AsyncHTTPRequest from Litestar request."""
+    from unittest.mock import Mock
+    
+    # Mock a Litestar request
+    mock_request = Mock()
+    mock_request.method = "HEAD"
+    mock_request.query_params = {}
+    mock_request.headers = {}
+    
+    # Create AsyncHTTPRequest from Litestar
+    request = AsyncHTTPRequest.from_litestar(mock_request)
+    
+    # Verify it's an AsyncHTTPRequest instance
+    assert isinstance(request, AsyncHTTPRequest)
+    # Verify the adapter was created correctly
+    assert request._adapter.__class__.__name__ == "LitestarRequestAdapter"

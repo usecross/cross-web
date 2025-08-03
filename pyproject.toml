@@ -53,6 +53,12 @@ parallel = true
 [tool.coverage.report]
 show_missing = true
 sort = "-Cover"
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
 
 [tool.coverage.html]
 skip_covered = true

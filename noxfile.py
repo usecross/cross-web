@@ -189,3 +189,31 @@ def coverage(session: nox.Session) -> None:
 
     # Show report in terminal and check coverage threshold
     session.run("coverage", "report", "--fail-under=80")
+
+
+@nox.session(python=["3.12"], name="test-coverage-html")
+def test_coverage_html(session: nox.Session) -> None:
+    """Run all tests and generate HTML coverage report (local use only)."""
+    session.run_install(
+        "uv",
+        "sync",
+        "--dev",
+        "--group",
+        "integrations",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
+    
+    # Run all tests with coverage
+    session.run("pytest", "-v", "--cov", "--cov-report=html", "--cov-report=term")
+    
+    # Open the HTML report in the browser (optional)
+    import webbrowser
+    import pathlib
+    html_report = pathlib.Path("htmlcov/index.html").absolute()
+    if html_report.exists():
+        session.log(f"Opening coverage report at: {html_report}")
+        webbrowser.open(f"file://{html_report}")
+    else:
+        session.warn("HTML coverage report not found")
