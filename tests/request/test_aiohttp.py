@@ -5,14 +5,13 @@ from lia import AiohttpHTTPRequestAdapter
 pytestmark = [pytest.mark.aiohttp]
 
 
-@pytest.mark.asyncio
-async def test_aiohttp_adapter_json():
+async def test_aiohttp_adapter_json() -> None:
     from aiohttp import web
     from aiohttp.test_utils import TestClient, TestServer
 
     adapter_result = None
 
-    async def handler(request):
+    async def handler(request: web.Request) -> web.Response:
         nonlocal adapter_result
         adapter_result = await AiohttpHTTPRequestAdapter.create(request)
         return web.json_response({"status": "ok"})
@@ -37,14 +36,13 @@ async def test_aiohttp_adapter_json():
         assert body == b'{"key": "value"}'
 
 
-@pytest.mark.asyncio
-async def test_aiohttp_adapter_form_data():
+async def test_aiohttp_adapter_form_data() -> None:
     from aiohttp import web, FormData
     from aiohttp.test_utils import TestClient, TestServer
 
     adapter_result = None
 
-    async def handler(request):
+    async def handler(request: web.Request) -> web.Response:
         nonlocal adapter_result
         adapter_result = await AiohttpHTTPRequestAdapter.create(request)
         return web.json_response({"status": "ok"})
@@ -65,7 +63,10 @@ async def test_aiohttp_adapter_form_data():
         assert adapter_result is not None
         assert adapter_result.query_params == {"query": "test"}
         assert adapter_result.method == "POST"
-        assert adapter_result.headers["content-type"].startswith("multipart/form-data")
+        content_type = adapter_result.headers.get("content-type")
+        assert content_type is not None
+        assert content_type.startswith("multipart/form-data")
+        assert adapter_result.content_type is not None
         assert adapter_result.content_type.startswith("multipart/form-data")
         assert "test" in str(adapter_result.url)
         assert adapter_result.cookies == {"session": "123"}

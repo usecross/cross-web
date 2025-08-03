@@ -1,3 +1,3 @@
 # Django URL configuration for tests
 
-urlpatterns = []
+urlpatterns = []  # type: ignore

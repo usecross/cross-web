@@ -48,7 +48,8 @@ class Response:
             cookies=cookies,
         )
 
-    def json(self) -> dict[str, Any] | None:
+    # TODO: better typing for json
+    def json(self) -> dict[str, Any] | list[Any] | None:
         if self.body is None:
             return None
 

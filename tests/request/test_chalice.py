@@ -5,7 +5,7 @@ from lia import ChaliceHTTPRequestAdapter
 pytestmark = [pytest.mark.chalice]
 
 
-def test_chalice_adapter():
+def test_chalice_adapter() -> None:
     from chalice.app import Request
 
     # Create a Chalice request
@@ -37,7 +37,7 @@ def test_chalice_adapter():
     assert adapter.url == "https://api.example.com/dev/graphql?query=test"
 
     # Test cookie parsing
-    event["headers"]["Cookie"] = "session=123; user=john"
+    event["headers"]["Cookie"] = "session=123; user=john"  # type: ignore[index]
     request = Request(event)
     adapter = ChaliceHTTPRequestAdapter(request)
     assert adapter.cookies == {"session": "123", "user": "john"}
@@ -53,7 +53,7 @@ def test_chalice_adapter():
         adapter.get_form_data()
 
 
-def test_chalice_adapter_non_base64():
+def test_chalice_adapter_non_base64() -> None:
     from chalice.app import Request
 
     # Create a Chalice request with non-base64 body
@@ -85,10 +85,10 @@ def test_chalice_adapter_non_base64():
     assert adapter.url == "https://api.example.com/dev/graphql?query=test"
 
 
-def test_chalice_adapter_prod_stage():
+def test_chalice_adapter_prod_stage() -> None:
     """Test Chalice adapter with prod stage - line 62"""
     from chalice.app import Request
-    
+
     event = {
         "headers": {},
         "multiValueQueryStringParameters": {},
@@ -104,18 +104,18 @@ def test_chalice_adapter_prod_stage():
             "resourcePath": "/test",
         },
     }
-    
+
     request = Request(event)
     adapter = ChaliceHTTPRequestAdapter(request)
-    
+
     # URL should not include /prod
     assert adapter.url == "https://api.example.com/test"
 
 
-def test_chalice_adapter_no_stage():
+def test_chalice_adapter_no_stage() -> None:
     """Test Chalice adapter with no stage - line 62"""
     from chalice.app import Request
-    
+
     event = {
         "headers": {},
         "multiValueQueryStringParameters": {},
@@ -131,18 +131,18 @@ def test_chalice_adapter_no_stage():
             "resourcePath": "/test",
         },
     }
-    
+
     request = Request(event)
     adapter = ChaliceHTTPRequestAdapter(request)
-    
+
     # URL should not include stage
     assert adapter.url == "https://api.example.com/test"
 
 
-def test_chalice_adapter_no_cookies():
+def test_chalice_adapter_no_cookies() -> None:
     """Test Chalice adapter with no cookies - line 79"""
     from chalice.app import Request
-    
+
     event = {
         "headers": {},  # No Cookie header
         "multiValueQueryStringParameters": {},
@@ -158,9 +158,9 @@ def test_chalice_adapter_no_cookies():
             "resourcePath": "/test",
         },
     }
-    
+
     request = Request(event)
     adapter = ChaliceHTTPRequestAdapter(request)
-    
+
     # Should return empty dict when no Cookie header - line 79
     assert adapter.cookies == {}

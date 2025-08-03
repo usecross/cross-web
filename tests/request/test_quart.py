@@ -6,15 +6,15 @@ pytestmark = [pytest.mark.quart]
 
 
 @pytest.mark.asyncio
-async def test_quart_adapter():
+async def test_quart_adapter() -> None:
     from quart import Quart
 
     app = Quart(__name__)
 
     adapter_result = None
 
-    @app.post("/test")
-    async def handler():
+    @app.post("/test")  # type: ignore[misc]
+    async def handler() -> dict[str, str]:
         from quart import request
 
         nonlocal adapter_result
@@ -39,7 +39,7 @@ async def test_quart_adapter():
 
 
 @pytest.mark.asyncio
-async def test_quart_adapter_form_data():
+async def test_quart_adapter_form_data() -> None:
     from quart import Quart
     from werkzeug.datastructures import FileStorage
     import io
@@ -48,8 +48,8 @@ async def test_quart_adapter_form_data():
 
     adapter_result = None
 
-    @app.post("/test")
-    async def handler():
+    @app.post("/test")  # type: ignore[misc]
+    async def handler() -> dict[str, str]:
         from quart import request
 
         nonlocal adapter_result
@@ -73,7 +73,10 @@ async def test_quart_adapter_form_data():
         assert adapter_result.query_params == {"query": "test"}
         assert adapter_result.method == "POST"
         assert adapter_result.headers["Content-Type"].startswith("multipart/form-data")
-        assert adapter_result.content_type.startswith("multipart/form-data")
+        assert (
+            adapter_result.content_type is not None
+            and adapter_result.content_type.startswith("multipart/form-data")
+        )
         assert "test" in adapter_result.url
         assert dict(adapter_result.cookies) == {"session": "123"}
 

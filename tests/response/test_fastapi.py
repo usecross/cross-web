@@ -5,7 +5,7 @@ from lia import Response
 pytestmark = [pytest.mark.fastapi]
 
 
-def test_basic_response():
+def test_basic_response() -> None:
     from fastapi import Response as FastAPIResponse
 
     response = Response(
@@ -23,7 +23,7 @@ def test_basic_response():
     assert fastapi_response.body == b"Hello, world!"
 
 
-def test_redirect():
+def test_redirect() -> None:
     from fastapi import Response as FastAPIResponse
 
     response = Response.redirect("https://example.com")

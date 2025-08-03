@@ -1,12 +1,18 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 import pytest
 
 from lia import StarletteRequestAdapter
 
 pytestmark = [pytest.mark.starlette]
 
+if TYPE_CHECKING:
+    from starlette.requests import Request
+
 
 @pytest.mark.asyncio
-async def test_starlette_adapter():
+async def test_starlette_adapter() -> None:
     from starlette.applications import Starlette
     from starlette.responses import JSONResponse
     from starlette.routing import Route
@@ -15,7 +21,7 @@ async def test_starlette_adapter():
     adapter_result = None
     body_result = None
 
-    async def handler(request):
+    async def handler(request: Request) -> JSONResponse:
         nonlocal adapter_result, body_result
         adapter_result = StarletteRequestAdapter(request)
         body_result = await adapter_result.get_body()
@@ -38,7 +44,7 @@ async def test_starlette_adapter():
 
 
 @pytest.mark.asyncio
-async def test_starlette_adapter_form_data():
+async def test_starlette_adapter_form_data() -> None:
     from starlette.applications import Starlette
     from starlette.responses import JSONResponse
     from starlette.routing import Route
@@ -48,7 +54,7 @@ async def test_starlette_adapter_form_data():
     adapter_result = None
     form_data_result = None
 
-    async def handler(request):
+    async def handler(request: Request) -> JSONResponse:
         nonlocal adapter_result, form_data_result
         adapter_result = StarletteRequestAdapter(request)
         form_data_result = await adapter_result.get_form_data()
@@ -67,11 +73,18 @@ async def test_starlette_adapter_form_data():
         assert adapter_result is not None
         assert dict(adapter_result.query_params) == {"query": "test"}
         assert adapter_result.method == "POST"
-        assert adapter_result.headers["content-type"].startswith("multipart/form-data")
-        assert adapter_result.content_type.startswith("multipart/form-data")
+        assert adapter_result.headers[
+            "content-type"
+        ] is not None and adapter_result.headers["content-type"].startswith(
+            "multipart/form-data"
+        )
+        assert (
+            adapter_result.content_type is not None
+            and adapter_result.content_type.startswith("multipart/form-data")
+        )
         assert "test" in str(adapter_result.url)
         assert dict(adapter_result.cookies) == {"session": "123"}
-        
+
         # Check form data was retrieved
         assert form_data_result is not None
         assert "form" in form_data_result.form

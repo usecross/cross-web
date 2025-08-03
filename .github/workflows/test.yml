@@ -145,5 +145,3 @@ jobs:
 
       - name: Run mypy
         run: uvx nox -s mypy
-
-

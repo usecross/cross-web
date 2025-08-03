@@ -7,7 +7,7 @@ pytestmark = [pytest.mark.django]
 
 
 @pytest.fixture(scope="module", autouse=True)
-def django_setup():
+def django_setup() -> None:
     import django
     from django.conf import settings
 
@@ -34,7 +34,7 @@ def django_setup():
         django.setup()
 
 
-def test_sync_django_adapter():
+def test_sync_django_adapter() -> None:
     from django.test import RequestFactory
     from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -62,7 +62,9 @@ def test_sync_django_adapter():
     assert adapter.headers["Content-Type"].startswith("multipart/form-data")
     assert adapter.post_data["form"] == "data"
     assert "file" in adapter.files
-    assert adapter.content_type.startswith("multipart/form-data")
+    assert adapter.content_type is not None and adapter.content_type.startswith(
+        "multipart/form-data"
+    )
     assert adapter.url == "http://testserver/test?query=test"
     assert adapter.cookies == {"session": "123"}
 
@@ -71,7 +73,7 @@ def test_sync_django_adapter():
     assert form_data.form["form"] == "data"
 
 
-def test_sync_django_adapter_json():
+def test_sync_django_adapter_json() -> None:
     from django.test import RequestFactory
 
     factory = RequestFactory()
@@ -96,7 +98,7 @@ def test_sync_django_adapter_json():
 
 
 @pytest.mark.asyncio
-async def test_async_django_adapter():
+async def test_async_django_adapter() -> None:
     from django.test import RequestFactory
     from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -121,7 +123,9 @@ async def test_async_django_adapter():
     assert body  # Body contains multipart data
     assert adapter.method == "POST"
     assert "Content-Type" in adapter.headers
-    assert adapter.content_type.startswith("multipart/form-data")
+    assert adapter.content_type is not None and adapter.content_type.startswith(
+        "multipart/form-data"
+    )
     assert adapter.url == "http://testserver/test?query=test"
     assert adapter.cookies == {"session": "123"}
 
@@ -131,7 +135,7 @@ async def test_async_django_adapter():
 
 
 @pytest.mark.asyncio
-async def test_async_django_adapter_json():
+async def test_async_django_adapter_json() -> None:
     from django.test import RequestFactory
 
     factory = RequestFactory()

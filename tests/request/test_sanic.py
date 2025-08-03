@@ -1,12 +1,20 @@
+from __future__ import annotations
+
 import pytest
+from typing import TYPE_CHECKING, Any
 
 from lia import SanicHTTPRequestAdapter
 
 pytestmark = [pytest.mark.sanic]
 
+if TYPE_CHECKING:
+    from sanic import Sanic
+    from sanic.request import Request
+    from sanic.response import HTTPResponse
+
 
 @pytest.fixture
-def app():
+def app() -> Sanic[Any, Any]:
     import uuid
     from sanic import Sanic
 
@@ -15,13 +23,13 @@ def app():
 
 
 @pytest.mark.asyncio
-async def test_sanic_adapter(app):
+async def test_sanic_adapter(app: Sanic[Any, Any]) -> None:
     from sanic.response import text
 
     adapter_result = None
 
-    @app.post("/test")
-    async def handler(request):
+    @app.post("/test")  # type: ignore[misc]
+    async def handler(request: Request) -> HTTPResponse:
         nonlocal adapter_result
         adapter_result = SanicHTTPRequestAdapter(request)
         return text("OK")
@@ -40,7 +48,10 @@ async def test_sanic_adapter(app):
     assert body  # Body contains multipart data
     assert adapter_result.method == "POST"
     assert adapter_result.headers["content-type"].startswith("multipart/form-data")
-    assert adapter_result.content_type.startswith("multipart/form-data")
+    assert (
+        adapter_result.content_type is not None
+        and adapter_result.content_type.startswith("multipart/form-data")
+    )
     assert "test" in adapter_result.url
     # Sanic cookies are returned as lists
     assert adapter_result.cookies["session"] == "123" or adapter_result.cookies == {
@@ -54,13 +65,13 @@ async def test_sanic_adapter(app):
 
 
 @pytest.mark.asyncio
-async def test_sanic_adapter_json(app):
+async def test_sanic_adapter_json(app: Sanic[Any, Any]) -> None:
     from sanic.response import text
 
     adapter_result = None
 
-    @app.post("/test")
-    async def handler(request):
+    @app.post("/test")  # type: ignore[misc]
+    async def handler(request: Request) -> HTTPResponse:
         nonlocal adapter_result
         adapter_result = SanicHTTPRequestAdapter(request)
         return text("OK")

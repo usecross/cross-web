@@ -1,3 +1,4 @@
+# type: ignore
 """Nox sessions for testing and linting."""
 
 import nox
@@ -204,15 +205,16 @@ def test_coverage_html(session: nox.Session) -> None:
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    
+
     # Run all tests with coverage
     session.run("coverage", "run", "-m", "pytest", "-v")
     session.run("coverage", "html")
     session.run("coverage", "report")
-    
+
     # Open the HTML report in the browser (optional)
     import webbrowser
     import pathlib
+
     html_report = pathlib.Path("htmlcov/index.html").absolute()
     if html_report.exists():
         session.log(f"Opening coverage report at: {html_report}")

@@ -7,7 +7,7 @@ from lia import AsyncFlaskHTTPRequestAdapter, FlaskHTTPRequestAdapter
 pytestmark = [pytest.mark.flask]
 
 
-def test_sync_flask_adapter():
+def test_sync_flask_adapter() -> None:
     from flask import Flask
 
     app = Flask(__name__)
@@ -28,7 +28,9 @@ def test_sync_flask_adapter():
         assert adapter.headers["Content-Type"].startswith("multipart/form-data")
         assert adapter.post_data["form"] == "data"
         assert "file" in adapter.files
-        assert adapter.content_type.startswith("multipart/form-data")
+        assert adapter.content_type is not None and adapter.content_type.startswith(
+            "multipart/form-data"
+        )
         assert "/test" in adapter.url
         assert dict(adapter.cookies) == {"session": "123"}
 
@@ -37,7 +39,7 @@ def test_sync_flask_adapter():
         assert form_data.form["form"] == "data"
 
 
-def test_sync_flask_adapter_json():
+def test_sync_flask_adapter_json() -> None:
     from flask import Flask
 
     app = Flask(__name__)
@@ -63,7 +65,7 @@ def test_sync_flask_adapter_json():
 
 
 @pytest.mark.asyncio
-async def test_async_flask_adapter():
+async def test_async_flask_adapter() -> None:
     from flask import Flask
 
     app = Flask(__name__)
@@ -90,7 +92,7 @@ async def test_async_flask_adapter():
 
 
 @pytest.mark.asyncio
-async def test_async_flask_adapter_multipart():
+async def test_async_flask_adapter_multipart() -> None:
     from flask import Flask
 
     app = Flask(__name__)
@@ -109,7 +111,9 @@ async def test_async_flask_adapter_multipart():
         assert adapter.query_params == {"query": "test"}
         assert adapter.method == "POST"
         assert adapter.headers["Content-Type"].startswith("multipart/form-data")
-        assert adapter.content_type.startswith("multipart/form-data")
+        assert adapter.content_type is not None and adapter.content_type.startswith(
+            "multipart/form-data"
+        )
         assert "/test" in adapter.url
         assert dict(adapter.cookies) == {"session": "123"}
 

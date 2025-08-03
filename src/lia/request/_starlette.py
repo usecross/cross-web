@@ -22,7 +22,7 @@ class StarletteRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def query_params(self) -> QueryParams:
         # Starlette QueryParams behaves like a MultiDict Mapping
-        return self._request.query_params
+        return cast(QueryParams, self._request.query_params)
 
     @property
     def headers(self) -> Mapping[str, str]:
@@ -55,4 +55,4 @@ class StarletteRequestAdapter(AsyncHTTPRequestAdapter):
 
     @property
     def cookies(self) -> Mapping[str, str]:
-        return self._request.cookies
+        return cast(Mapping[str, str], self._request.cookies)
