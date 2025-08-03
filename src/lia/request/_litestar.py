@@ -41,11 +41,11 @@ class LitestarRequestAdapter(AsyncHTTPRequestAdapter):
         multipart_data = await self.request.form()
 
         return FormData(form=multipart_data, files=multipart_data)
-    
+
     @property
     def url(self) -> str:
         return str(self.request.url)
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies

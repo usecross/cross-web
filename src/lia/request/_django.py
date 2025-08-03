@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Mapping, Optional, Union, cast
 
-from ._base import AsyncHTTPRequestAdapter, FormData, HTTPMethod, QueryParams, SyncHTTPRequestAdapter
+from ._base import (
+    AsyncHTTPRequestAdapter,
+    FormData,
+    HTTPMethod,
+    QueryParams,
+    SyncHTTPRequestAdapter,
+)
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
@@ -37,7 +43,7 @@ class DjangoHTTPRequestAdapter(SyncHTTPRequestAdapter):
     @property
     def files(self) -> Mapping[str, Any]:
         return self.request.FILES
-    
+
     def get_form_data(self) -> FormData:
         return FormData(
             files=self.request.FILES,
@@ -47,11 +53,11 @@ class DjangoHTTPRequestAdapter(SyncHTTPRequestAdapter):
     @property
     def content_type(self) -> Optional[str]:
         return self.request.content_type
-    
+
     @property
     def url(self) -> str:
         return self.request.build_absolute_uri()
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.COOKIES
@@ -87,11 +93,11 @@ class AsyncDjangoHTTPRequestAdapter(AsyncHTTPRequestAdapter):
             files=self.request.FILES,
             form=self.request.POST,
         )
-    
+
     @property
     def url(self) -> str:
         return self.request.build_absolute_uri()
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.COOKIES

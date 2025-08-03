@@ -35,11 +35,11 @@ class QuartHTTPRequestAdapter(AsyncHTTPRequestAdapter):
         files = await self.request.files
         form = await self.request.form
         return FormData(files=files, form=form)
-    
+
     @property
     def url(self) -> str:
         return self.request.url
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies

@@ -22,9 +22,7 @@ async def test_litestar_adapter():
 
     with TestClient(app=app) as client:
         client.cookies["session"] = "123"
-        response = client.post(
-            "/test?query=test", json={"key": "value"}
-        )
+        client.post("/test?query=test", json={"key": "value"})
 
         assert adapter_result is not None
         assert dict(adapter_result.query_params) == {"query": "test"}
@@ -39,7 +37,6 @@ async def test_litestar_adapter():
 async def test_litestar_adapter_form_data():
     from litestar import Litestar, post, Request
     from litestar.testing import TestClient
-    import io
 
     adapter_result = None
 
@@ -53,7 +50,7 @@ async def test_litestar_adapter_form_data():
 
     with TestClient(app=app) as client:
         client.cookies["session"] = "123"
-        response = client.post(
+        client.post(
             "/test?query=test",
             data={"form": "data"},
             files={"file": ("test.txt", b"upload")},

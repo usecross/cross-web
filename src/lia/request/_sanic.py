@@ -73,11 +73,11 @@ class SanicHTTPRequestAdapter(AsyncHTTPRequestAdapter):
         files = convert_request_to_files_dict(self.request)
 
         return FormData(form=self.request.form, files=files)
-    
+
     @property
     def url(self) -> str:
         return self.request.url
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies

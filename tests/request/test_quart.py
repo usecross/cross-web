@@ -25,7 +25,7 @@ async def test_quart_adapter():
         # Set cookies on client with proper arguments
         client.set_cookie("localhost", "session", "123")
         # Test with JSON data
-        response = await client.post("/test?query=test", json={"key": "value"})
+        await client.post("/test?query=test", json={"key": "value"})
 
         assert adapter_result is not None
         assert adapter_result.query_params == {"query": "test"}
@@ -61,11 +61,9 @@ async def test_quart_adapter_form_data():
         client.set_cookie("localhost", "session", "123")
         # Test with form data and files
         file_obj = FileStorage(
-            stream=io.BytesIO(b"upload"),
-            filename="test.txt",
-            content_type="text/plain"
+            stream=io.BytesIO(b"upload"), filename="test.txt", content_type="text/plain"
         )
-        response = await client.post(
+        await client.post(
             "/test?query=test",
             form={"form": "data"},
             files={"file": file_obj},

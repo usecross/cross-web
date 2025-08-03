@@ -9,7 +9,6 @@ pytestmark = [pytest.mark.flask]
 
 def test_sync_flask_adapter():
     from flask import Flask
-    from werkzeug.datastructures import FileStorage
 
     app = Flask(__name__)
 

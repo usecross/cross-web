@@ -9,6 +9,7 @@ pytestmark = [pytest.mark.sanic]
 def app():
     import uuid
     from sanic import Sanic
+
     # Use a unique name to avoid conflicts between tests
     return Sanic(f"TestSanic_{uuid.uuid4().hex[:8]}")
 
@@ -16,7 +17,7 @@ def app():
 @pytest.mark.asyncio
 async def test_sanic_adapter(app):
     from sanic.response import text
-    
+
     adapter_result = None
 
     @app.post("/test")
@@ -55,7 +56,7 @@ async def test_sanic_adapter(app):
 @pytest.mark.asyncio
 async def test_sanic_adapter_json(app):
     from sanic.response import text
-    
+
     adapter_result = None
 
     @app.post("/test")
@@ -66,9 +67,7 @@ async def test_sanic_adapter_json(app):
 
     # Test with JSON data
     app.asgi_client.cookies["session"] = "123"
-    _, response = await app.asgi_client.post(
-        "/test?query=test", json={"key": "value"}
-    )
+    _, response = await app.asgi_client.post("/test?query=test", json={"key": "value"})
 
     assert adapter_result is not None
     assert adapter_result.query_params == {"query": "test"}

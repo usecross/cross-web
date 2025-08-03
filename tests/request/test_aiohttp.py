@@ -21,7 +21,7 @@ async def test_aiohttp_adapter_json():
     app.router.add_post("/test", handler)
 
     async with TestClient(TestServer(app)) as client:
-        response = await client.post(
+        await client.post(
             "/test?query=test", json={"key": "value"}, cookies={"session": "123"}
         )
 
@@ -60,9 +60,7 @@ async def test_aiohttp_adapter_form_data():
             "file", b"upload", filename="test.txt", content_type="text/plain"
         )
 
-        response = await client.post(
-            "/test?query=test", data=data, cookies={"session": "123"}
-        )
+        await client.post("/test?query=test", data=data, cookies={"session": "123"})
 
         assert adapter_result is not None
         assert adapter_result.query_params == {"query": "test"}

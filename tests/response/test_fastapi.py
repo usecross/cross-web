@@ -7,6 +7,7 @@ pytestmark = [pytest.mark.fastapi]
 
 def test_basic_response():
     from fastapi import Response as FastAPIResponse
+
     response = Response(
         body="Hello, world!",
         status_code=200,
@@ -24,7 +25,7 @@ def test_basic_response():
 
 def test_redirect():
     from fastapi import Response as FastAPIResponse
-    
+
     response = Response.redirect("https://example.com")
     fastapi_response = response.to_fastapi()
 

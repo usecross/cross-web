@@ -162,21 +162,22 @@ def coverage(session: nox.Session) -> None:
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    
+
     # Combine coverage data from multiple test runs
     session.run("coverage", "combine", success_codes=[0, 1])
-    
+
     # Generate HTML report
     session.run("coverage", "html", "--skip-covered", "--skip-empty")
-    
+
     # Generate markdown report for GitHub Actions summary (if in CI)
     if session.posargs and "--ci" in session.posargs:
         session.run(
-            "sh", "-c", 
+            "sh",
+            "-c",
             "coverage report --format=markdown >> $GITHUB_STEP_SUMMARY",
             success_codes=[0, 1],
-            external=True
+            external=True,
         )
-    
+
     # Show report in terminal and check coverage threshold
     session.run("coverage", "report", "--fail-under=80")

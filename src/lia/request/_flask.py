@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Mapping, Optional, Union, cast
 
-from ._base import AsyncHTTPRequestAdapter, FormData, HTTPMethod, QueryParams, SyncHTTPRequestAdapter
+from ._base import (
+    AsyncHTTPRequestAdapter,
+    FormData,
+    HTTPMethod,
+    QueryParams,
+    SyncHTTPRequestAdapter,
+)
 
 if TYPE_CHECKING:
     from flask import Request
@@ -35,7 +41,7 @@ class FlaskHTTPRequestAdapter(SyncHTTPRequestAdapter):
     @property
     def files(self) -> Mapping[str, Any]:
         return self.request.files
-    
+
     def get_form_data(self) -> FormData:
         return FormData(
             files=self.request.files,
@@ -45,11 +51,11 @@ class FlaskHTTPRequestAdapter(SyncHTTPRequestAdapter):
     @property
     def content_type(self) -> Optional[str]:
         return self.request.content_type
-    
+
     @property
     def url(self) -> str:
         return self.request.url
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies
@@ -83,11 +89,11 @@ class AsyncFlaskHTTPRequestAdapter(AsyncHTTPRequestAdapter):
             files=self.request.files,
             form=self.request.form,
         )
-    
+
     @property
     def url(self) -> str:
         return self.request.url
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies

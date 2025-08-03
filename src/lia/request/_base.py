@@ -61,7 +61,7 @@ class SyncHTTPRequestAdapter(abc.ABC):
     def post_data(self) -> Mapping[str, Union[str, bytes]]:
         """Return the parsed POST data as a mapping of field names to values."""
         raise NotImplementedError
-    
+
     @property
     @abc.abstractmethod
     def files(self) -> Mapping[str, Any]:

@@ -37,7 +37,7 @@ class ChaliceHTTPRequestAdapter(SyncHTTPRequestAdapter):
     def files(self) -> Mapping[str, Any]:
         # Chalice doesn't support file uploads out of the box
         raise NotImplementedError("Chalice does not support file uploads")
-    
+
     def get_form_data(self) -> FormData:
         # Chalice doesn't support form data
         raise NotImplementedError("Chalice does not support form data")
@@ -45,7 +45,7 @@ class ChaliceHTTPRequestAdapter(SyncHTTPRequestAdapter):
     @property
     def content_type(self) -> Optional[str]:
         return self.request.headers.get("Content-Type", None)
-    
+
     @property
     def url(self) -> str:
         # Construct URL from context
@@ -53,22 +53,23 @@ class ChaliceHTTPRequestAdapter(SyncHTTPRequestAdapter):
         stage = context.get("stage", "")
         domain = context.get("domainName", "")
         path = context.get("path", "")
-        
+
         # Build the URL
         protocol = "https"  # API Gateway typically uses HTTPS
         if stage and stage != "prod":
             url = f"{protocol}://{domain}/{stage}{path}"
         else:
             url = f"{protocol}://{domain}{path}"
-        
+
         # Add query string if present
         if self.request.query_params:
             from urllib.parse import urlencode
+
             query_string = urlencode(self.request.query_params)
             url = f"{url}?{query_string}"
-        
+
         return url
-    
+
     @property
     def cookies(self) -> Mapping[str, str]:
         # Chalice doesn't have direct cookie support
@@ -76,12 +77,12 @@ class ChaliceHTTPRequestAdapter(SyncHTTPRequestAdapter):
         cookie_header = self.request.headers.get("Cookie", "")
         if not cookie_header:
             return {}
-        
+
         cookies = {}
         for cookie in cookie_header.split(";"):
             cookie = cookie.strip()
             if "=" in cookie:
                 name, value = cookie.split("=", 1)
                 cookies[name] = value
-        
+
         return cookies

@@ -23,9 +23,7 @@ async def test_starlette_adapter():
 
     with TestClient(app) as client:
         client.cookies.set("session", "123")
-        response = client.post(
-            "/test?query=test", json={"key": "value"}
-        )
+        client.post("/test?query=test", json={"key": "value"})
 
         assert adapter_result is not None
         assert dict(adapter_result.query_params) == {"query": "test"}
