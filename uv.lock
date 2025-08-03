@@ -941,10 +941,11 @@ wheels = [
 
 [[package]]
 name = "lia-web"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "pydantic" },
+    { name = "typing-extensions" },
 ]
 
 [package.dev-dependencies]
@@ -973,7 +974,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydantic", specifier = ">=2.11.3" }]
+requires-dist = [
+    { name = "pydantic", specifier = ">=2.11.3" },
+    { name = "typing-extensions", specifier = ">=4.14.0" },
+]
 
 [package.metadata.requires-dev]
 dev = [
