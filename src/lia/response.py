@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Literal, Mapping, cast
+from typing import TYPE_CHECKING, Literal, Mapping, List, Union, cast
 from typing_extensions import Self
 from urllib.parse import urlencode
 
 if TYPE_CHECKING:
     from fastapi import Response as FastAPIResponse
+
+JsonType = Union[
+    str, int, float, bool, None, Mapping[str, "JsonType"], List["JsonType"]
+]
 
 
 @dataclass
@@ -48,12 +52,11 @@ class Response:
             cookies=cookies,
         )
 
-    # TODO: better typing for json
-    def json(self) -> dict[str, Any] | list[Any] | None:
+    def json(self) -> JsonType:
         if self.body is None:
             return None
 
-        return cast(dict[str, Any], json.loads(self.body))
+        return cast(JsonType, json.loads(self.body))
 
     def to_fastapi(self) -> FastAPIResponse:
         from fastapi import Response as FastAPIResponse
