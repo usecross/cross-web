@@ -29,7 +29,7 @@ def tests(session: nox.Session) -> None:
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    session.run("pytest", "-v", "--cov")
+    session.run("coverage", "run", "-m", "pytest", "-v")
 
 
 @nox.session(python=DJANGO_PYTHON_VERSIONS, tags=["tests"])
@@ -47,7 +47,7 @@ def tests_django(session: nox.Session, django: str) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.install(f"django~={django}.0")
-    session.run("pytest", "-m", "django", "-v", "--cov")
+    session.run("coverage", "run", "-m", "pytest", "-m", "django", "-v")
 
 
 @nox.session(python=["3.9", "3.12"], tags=["tests"])
@@ -65,7 +65,7 @@ def tests_flask(session: nox.Session, flask: str) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.install(f"flask~={flask}.0")
-    session.run("pytest", "-m", "flask", "-v", "--cov")
+    session.run("coverage", "run", "-m", "pytest", "-m", "flask", "-v")
 
 
 @nox.session(python=["3.9", "3.12"], tags=["tests"])
@@ -83,7 +83,7 @@ def tests_starlette(session: nox.Session, starlette: str) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.install(f"starlette~={starlette}.0")
-    session.run("pytest", "-m", "starlette", "-v", "--cov")
+    session.run("coverage", "run", "-m", "pytest", "-m", "starlette", "-v")
 
 
 @nox.session(python=["3.12"], name="tests-frameworks", tags=["tests"])
@@ -110,7 +110,7 @@ def tests_frameworks(session: nox.Session) -> None:
 
     for framework, deps in frameworks.items():
         session.install(*deps)
-        session.run("pytest", "-m", framework, "-v", "--cov")
+        session.run("coverage", "run", "-m", "pytest", "-m", framework, "-v")
 
 
 @nox.session(python=["3.12"], name="tests-fastapi", tags=["tests"])
@@ -125,7 +125,7 @@ def tests_fastapi(session: nox.Session) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.install("fastapi", "httpx", "python-multipart")
-    session.run("pytest", "-m", "fastapi", "-v", "--cov")
+    session.run("coverage", "run", "-m", "pytest", "-m", "fastapi", "-v")
 
 
 @nox.session(python=["3.12"])
@@ -206,7 +206,9 @@ def test_coverage_html(session: nox.Session) -> None:
     )
     
     # Run all tests with coverage
-    session.run("pytest", "-v", "--cov", "--cov-report=html", "--cov-report=term")
+    session.run("coverage", "run", "-m", "pytest", "-v")
+    session.run("coverage", "html")
+    session.run("coverage", "report")
     
     # Open the HTML report in the browser (optional)
     import webbrowser

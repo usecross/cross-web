@@ -71,6 +71,8 @@ jobs:
 
       - name: Run tests
         run: uvx nox -r -t tests -s "${{ matrix.session.session }}"
+        env:
+          COVERAGE_FILE: .coverage.${{ matrix.session.session }}.${{ github.run_id }}
 
       - name: Generate artifact name
         id: artifact-name
