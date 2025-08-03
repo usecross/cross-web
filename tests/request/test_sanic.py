@@ -7,8 +7,10 @@ pytestmark = [pytest.mark.sanic]
 
 @pytest.fixture
 def app():
+    import uuid
     from sanic import Sanic
-    return Sanic("TestSanic")
+    # Use a unique name to avoid conflicts between tests
+    return Sanic(f"TestSanic_{uuid.uuid4().hex[:8]}")
 
 
 @pytest.mark.asyncio
@@ -24,11 +26,11 @@ async def test_sanic_adapter(app):
         return text("OK")
 
     # Test with form data and files
+    app.asgi_client.cookies["session"] = "123"
     _, response = await app.asgi_client.post(
         "/test?query=test",
         data={"form": "data"},
         files={"textFile": ("textFile.txt", b"upload", "text/plain")},
-        cookies={"session": "123"},
     )
 
     assert adapter_result is not None

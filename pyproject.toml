@@ -71,3 +71,8 @@ markers = [
     "sanic: marks tests for sanic framework",
     "starlette: marks tests for starlette framework",
 ]
+filterwarnings = [
+    "error",  # Treat all warnings as errors
+    "ignore:websockets.legacy is deprecated:DeprecationWarning:websockets.legacy",
+    "ignore:Unclosed file:ResourceWarning",  # Sanic internal file handling
+]

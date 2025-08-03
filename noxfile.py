@@ -8,6 +8,7 @@ nox.options.reuse_existing_virtualenvs = True
 
 # Python versions to test
 PYTHON_VERSIONS = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+DJANGO_PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13"]
 
 # Framework versions to test
 DJANGO_VERSIONS = ["5.0", "5.1", "5.2"]
@@ -31,7 +32,7 @@ def tests(session: nox.Session) -> None:
     session.run("pytest", "-v")
 
 
-@nox.session(python=["3.9", "3.12"], tags=["tests"])
+@nox.session(python=DJANGO_PYTHON_VERSIONS, tags=["tests"])
 @nox.parametrize("django", DJANGO_VERSIONS)
 def tests_django(session: nox.Session, django: str) -> None:
     """Test Django adapter with different Django versions."""
