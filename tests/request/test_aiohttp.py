@@ -2,9 +2,8 @@ import pytest
 
 from lia import AiohttpHTTPRequestAdapter
 
-pytestmark = [pytest.mark.aiohttp]
 
-
+@pytest.mark.asyncio
 async def test_aiohttp_adapter_json() -> None:
     from aiohttp import web
     from aiohttp.test_utils import TestClient, TestServer
@@ -36,6 +35,7 @@ async def test_aiohttp_adapter_json() -> None:
         assert body == b'{"key": "value"}'
 
 
+@pytest.mark.asyncio
 async def test_aiohttp_adapter_form_data() -> None:
     from aiohttp import web, FormData
     from aiohttp.test_utils import TestClient, TestServer
