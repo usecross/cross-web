@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import AsyncMock, MagicMock
 
 from lia import AiohttpHTTPRequestAdapter
 
@@ -76,3 +77,52 @@ async def test_aiohttp_adapter_form_data() -> None:
         form_data = await adapter_result.get_form_data()
         assert form_data.form["form"] == "data"
         assert "file" in form_data.files
+
+
+@pytest.mark.asyncio
+async def test_aiohttp_adapter_get_body_none() -> None:
+    """Test get_body() when _body is None (line 60)"""
+    # Create a mock request
+    mock_request = AsyncMock()
+    mock_request.read = AsyncMock(return_value=b"test body")
+
+    # Create adapter directly without pre-reading body
+    adapter = AiohttpHTTPRequestAdapter(mock_request, body=None)
+
+    # Call get_body() - this should trigger the read
+    body = await adapter.get_body()
+    assert body == b"test body"
+    mock_request.read.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_aiohttp_adapter_multipart_runtime_error() -> None:
+    """Test get_form_data() with multipart raises RuntimeError (lines 75-77)"""
+    # Create a mock request with multipart content type
+    mock_request = MagicMock()
+    mock_request.headers = {"content-type": "multipart/form-data; boundary=----"}
+
+    # Create adapter directly without pre-processing multipart
+    adapter = AiohttpHTTPRequestAdapter(mock_request, form_data=None)
+
+    # Should raise RuntimeError
+    with pytest.raises(RuntimeError, match="Multipart data should be pre-processed"):
+        await adapter.get_form_data()
+
+
+@pytest.mark.asyncio
+async def test_aiohttp_adapter_urlencoded_form() -> None:
+    """Test get_form_data() with URL-encoded form data (lines 79-81)"""
+    # Create a mock request with URL-encoded form data
+    mock_request = AsyncMock()
+    mock_request.headers = {"content-type": "application/x-www-form-urlencoded"}
+    mock_request.post = AsyncMock(return_value={"field1": "value1", "field2": "value2"})
+
+    # Create adapter directly without pre-processing form data
+    adapter = AiohttpHTTPRequestAdapter(mock_request, form_data=None)
+
+    # Call get_form_data() - this should parse URL-encoded data
+    form_data = await adapter.get_form_data()
+    assert form_data.form == {"field1": "value1", "field2": "value2"}
+    assert form_data.files == {}
+    mock_request.post.assert_called_once()

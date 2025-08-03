@@ -208,6 +208,10 @@ def test_coverage_html(session: nox.Session) -> None:
 
     # Run all tests with coverage
     session.run("coverage", "run", "-m", "pytest", "-v")
+
+    # Combine any existing coverage files (in case of parallel runs or leftover files)
+    session.run("coverage", "combine", success_codes=[0, 1])
+
     session.run("coverage", "html")
     session.run("coverage", "report")
 
