@@ -18,6 +18,7 @@ packages = ["src/lia"]
 dev = [
     "pytest>=7.4.4",
     "pytest-asyncio>=0.23.8",
+    "pytest-cov>=6.0.0",
     "inline-snapshot>=0.20.10",
     "coverage[toml]>=7.8.0",
     "nox>=2024.10.9",
@@ -47,14 +48,15 @@ format-command = "ruff format --stdin-filename {filename}"
 
 [tool.coverage.run]
 source = ["src"]
-dynamic_context = "test_function"
+parallel = true
 
 [tool.coverage.report]
 show_missing = true
 sort = "-Cover"
 
 [tool.coverage.html]
-show_contexts = true
+skip_covered = true
+skip_empty = true
 
 [tool.autopub]
 plugins = ["autopub.plugins.github", "autopub.plugins.uv"]

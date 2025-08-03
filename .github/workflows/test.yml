@@ -53,18 +53,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         session: ${{ fromJson(needs.generate-jobs.outputs.sessions) }}
-        include:
-          # Add Windows and macOS for main test suite
-          - os: windows-latest
-            session:
-              session: tests
-              python: "3.12"
-              call_spec: null
-          - os: macos-latest
-            session:
-              session: tests
-              python: "3.12"
-              call_spec: null
 
     steps:
       - uses: actions/checkout@v4
@@ -84,15 +72,28 @@ jobs:
       - name: Run tests
         run: uvx nox -r -t tests -s "${{ matrix.session.session }}"
 
-      - name: Upload coverage
-        if: matrix.session.session == 'tests' && matrix.os == 'ubuntu-latest' && matrix.session.python == '3.12'
+      - name: Generate artifact name
+        id: artifact-name
+        run: |
+          NAME="${{ matrix.session.name }}"
+          # Replace spaces with dashes and remove parentheses
+          SANITIZED=$(echo "$NAME" | tr ' ' '-' | tr -d '()')
+          echo "name=coverage-data-$SANITIZED" >> $GITHUB_OUTPUT
+
+      - name: Upload coverage data
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ matrix.os }}-${{ matrix.session.python }}
-          path: coverage.xml
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: |
+            .coverage
+            .coverage.*
+          include-hidden-files: true
+          if-no-files-found: ignore
 
   coverage:
-    name: Coverage Report
+    name: Combine & check coverage
+    if: always()
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -103,21 +104,21 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
+      - name: Download coverage data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-data-*
+          merge-multiple: true
+
       - name: Install Python
         run: uv python install 3.12
 
       - name: Install nox
         run: uv tool install nox
 
-      - name: Run tests with coverage
-        run: uvx nox -r -t tests -s tests-coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
-          fail_ci_if_error: false
+      - name: Combine coverage & generate report
+        run: |
+          uvx nox -s coverage -- --ci
 
   lint:
     name: Linting
