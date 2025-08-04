@@ -1,0 +1,147 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-jobs:
+    name: Generate test matrix
+    runs-on: ubuntu-latest
+    outputs:
+      sessions: ${{ steps.set-matrix.outputs.sessions }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install Python
+        run: uv python install 3.12
+
+      - name: Install nox
+        run: uv tool install nox
+
+      - name: Generate test matrix
+        id: set-matrix
+        shell: bash
+        run: |
+          echo sessions=$(
+            uvx nox --json -t tests -l |
+            jq 'map(
+              {
+                session,
+                name: "\( .name ) on \( .python )\( if .call_spec != {} then " (\(.call_spec | to_entries | map("\(.key)=\(.value)") | join(", ")))" else "" end )"
+              }
+            )'
+          ) | tee --append $GITHUB_OUTPUT
+
+  tests:
+    name: 🔬 ${{ matrix.session.name }}
+    needs: generate-jobs
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        session: ${{ fromJson(needs.generate-jobs.outputs.sessions) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install Python ${{ matrix.session.python }}
+        run: uv python install ${{ matrix.session.python }}
+
+      - name: Install nox
+        run: uv tool install nox
+
+      - name: Run tests
+        run: uvx nox -r -t tests -s "${{ matrix.session.session }}"
+        env:
+          COVERAGE_FILE: .coverage.${{ matrix.session.session }}.${{ github.run_id }}
+
+      - name: Generate artifact name
+        id: artifact-name
+        run: |
+          NAME="${{ matrix.session.name }}"
+          # Replace spaces with dashes and remove parentheses
+          SANITIZED=$(echo "$NAME" | tr ' ' '-' | tr -d '()')
+          echo "name=coverage-data-$SANITIZED" >> $GITHUB_OUTPUT
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: |
+            .coverage
+            .coverage.*
+          include-hidden-files: true
+          if-no-files-found: ignore
+
+  coverage:
+    name: Combine & check coverage
+    if: always()
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Download coverage data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-data-*
+          merge-multiple: true
+
+      - name: Install Python
+        run: uv python install 3.12
+
+      - name: Install nox
+        run: uv tool install nox
+
+      - name: Combine coverage & generate report
+        run: |
+          uvx nox -s coverage -- --ci
+
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install Python
+        run: uv python install 3.12
+
+      - name: Install nox
+        run: uv tool install nox
+
+      - name: Run lint
+        run: uvx nox -s lint
+
+      - name: Run mypy
+        run: uvx nox -s mypy

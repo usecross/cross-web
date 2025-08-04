@@ -62,6 +62,12 @@ class SyncHTTPRequestAdapter(abc.ABC):
         """Return the parsed POST data as a mapping of field names to values."""
         raise NotImplementedError
 
+    @property
+    @abc.abstractmethod
+    def files(self) -> Mapping[str, Any]:
+        """Return uploaded files from the request."""
+        raise NotImplementedError
+
     @abc.abstractmethod
     def get_form_data(self) -> FormData:
         """

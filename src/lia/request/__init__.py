@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Mapping, Optional, Self
+from typing import TYPE_CHECKING, Mapping, Optional, Any
+
+from typing_extensions import Self
 
 if TYPE_CHECKING:
     from starlette.requests import Request as StarletteRequest
@@ -23,6 +25,54 @@ class AsyncHTTPRequest:
     @classmethod
     def from_fastapi(cls, request: StarletteRequest) -> Self:
         return cls.from_starlette(request)
+
+    @classmethod
+    def from_django(cls, request: Any) -> Self:
+        # Import here to avoid circular imports and optional Django dependency
+        from ._django import AsyncDjangoHTTPRequestAdapter
+
+        adapter = AsyncDjangoHTTPRequestAdapter(request)
+        return cls(adapter)
+
+    @classmethod
+    def from_flask(cls, request: Any) -> Self:
+        # Import here to avoid circular imports and optional Flask dependency
+        from ._flask import AsyncFlaskHTTPRequestAdapter
+
+        adapter = AsyncFlaskHTTPRequestAdapter(request)
+        return cls(adapter)
+
+    @classmethod
+    def from_sanic(cls, request: Any) -> Self:
+        # Import here to avoid circular imports and optional Sanic dependency
+        from ._sanic import SanicHTTPRequestAdapter
+
+        adapter = SanicHTTPRequestAdapter(request)
+        return cls(adapter)
+
+    @classmethod
+    def from_aiohttp(cls, request: Any) -> Self:
+        # Import here to avoid circular imports and optional aiohttp dependency
+        from ._aiohttp import AiohttpHTTPRequestAdapter
+
+        adapter = AiohttpHTTPRequestAdapter(request)
+        return cls(adapter)
+
+    @classmethod
+    def from_quart(cls, request: Any) -> Self:
+        # Import here to avoid circular imports and optional Quart dependency
+        from ._quart import QuartHTTPRequestAdapter
+
+        adapter = QuartHTTPRequestAdapter(request)
+        return cls(adapter)
+
+    @classmethod
+    def from_litestar(cls, request: Any) -> Self:
+        # Import here to avoid circular imports and optional Litestar dependency
+        from ._litestar import LitestarRequestAdapter
+
+        adapter = LitestarRequestAdapter(request)
+        return cls(adapter)
 
     @classmethod
     def from_form_data(cls, data: Mapping[str, str]) -> Self:
