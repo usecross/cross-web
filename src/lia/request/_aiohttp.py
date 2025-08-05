@@ -56,6 +56,8 @@ class AiohttpHTTPRequestAdapter(AsyncHTTPRequestAdapter):
         return cast(QueryParams, self.request.query.copy())  # type: ignore[attr-defined]
 
     async def get_body(self) -> bytes:
+        if self._form_data is not None:
+            return b""
         if self._body is None:
             self._body = await self.request.read()
         return self._body
@@ -73,8 +75,24 @@ class AiohttpHTTPRequestAdapter(AsyncHTTPRequestAdapter):
             return self._form_data
 
         if self.content_type and self.content_type.startswith("multipart/form-data"):
-            # This should not happen if create() was used
-            raise RuntimeError("Multipart data should be pre-processed in create()")
+            # Process multipart data
+            reader = await self.request.multipart()
+            data: dict[str, Any] = {}
+            files: dict[str, Any] = {}
+
+            while field := await reader.next():
+                from aiohttp.multipart import BodyPartReader
+
+                assert isinstance(field, BodyPartReader)
+                assert field.name
+
+                if field.filename:
+                    files[field.name] = BytesIO(await field.read(decode=False))
+                else:
+                    data[field.name] = await field.text()
+
+            self._form_data = FormData(files=files, form=data)
+            return self._form_data
         else:
             # For URL-encoded form data
             post_data = await self.request.post()

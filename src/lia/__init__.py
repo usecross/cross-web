@@ -2,7 +2,7 @@ from .exceptions import HTTPException
 from .protocols import BaseRequestProtocol
 from .request import AsyncHTTPRequest
 from .request._aiohttp import AiohttpHTTPRequestAdapter
-from .request._base import AsyncHTTPRequestAdapter, SyncHTTPRequestAdapter
+from .request._base import AsyncHTTPRequestAdapter, FormData, SyncHTTPRequestAdapter
 from .request._chalice import ChaliceHTTPRequestAdapter
 from .request._django import AsyncDjangoHTTPRequestAdapter, DjangoHTTPRequestAdapter
 from .request._flask import AsyncFlaskHTTPRequestAdapter, FlaskHTTPRequestAdapter
@@ -24,6 +24,7 @@ __all__ = [
     "Cookie",
     "DjangoHTTPRequestAdapter",
     "FlaskHTTPRequestAdapter",
+    "FormData",
     "HTTPException",
     "LitestarRequestAdapter",
     "QuartHTTPRequestAdapter",
