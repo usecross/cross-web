@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.2.2 - 2025-08-08
+------------------
+
+This release removes Pydantic from the dependencies, since it was not used
+
 0.2.1 - 2025-08-05
 ------------------
 
