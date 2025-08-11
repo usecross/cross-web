@@ -8,6 +8,13 @@ requires-python = ">=3.9"
 dependencies = [
  "typing-extensions>=4.14.0",
 ]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "License :: OSI Approved :: MIT License",
+]
 
 [build-system]
 requires = ["hatchling"]
