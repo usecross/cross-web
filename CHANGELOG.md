@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.2.3 - 2025-08-11
+------------------
+
+This release adds the MIT license for this project.
+
 0.2.2 - 2025-08-08
 ------------------
 
