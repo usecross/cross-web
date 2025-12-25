@@ -1,6 +1,6 @@
 [project]
-name = "lia-web"
-version = "0.2.3"
+name = "cross-web"
+version = "0.3.0"
 description = "A library for working with web frameworks"
 readme = "README.md"
 authors = [{ name = "Patrick Arminio", email = "patrick.arminio@gmail.com" }]
@@ -21,7 +21,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/lia"]
+packages = ["src/cross_web"]
 
 [dependency-groups]
 dev = [

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from typing import TYPE_CHECKING, Any
 
-from lia import SanicHTTPRequestAdapter
+from cross_web import SanicHTTPRequestAdapter
 
 pytestmark = [pytest.mark.sanic]
 

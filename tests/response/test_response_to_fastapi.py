@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock, patch
-from lia.response import Cookie, Response
+from cross_web.response import Cookie, Response
 
 
 @pytest.mark.asyncio

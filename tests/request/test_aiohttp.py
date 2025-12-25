@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from lia import AiohttpHTTPRequestAdapter
+from cross_web import AiohttpHTTPRequestAdapter
 
 pytestmark = [pytest.mark.aiohttp]
 

@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock, AsyncMock
-from lia import LitestarRequestAdapter
+from cross_web import LitestarRequestAdapter
 
 
 @pytest.mark.asyncio

@@ -2,7 +2,7 @@ import io
 import json
 import pytest
 
-from lia import AsyncFlaskHTTPRequestAdapter, FlaskHTTPRequestAdapter
+from cross_web import AsyncFlaskHTTPRequestAdapter, FlaskHTTPRequestAdapter
 
 pytestmark = [pytest.mark.flask]
 

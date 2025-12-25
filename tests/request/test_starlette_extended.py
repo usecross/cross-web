@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock, AsyncMock
-from lia import StarletteRequestAdapter
+from cross_web import StarletteRequestAdapter
 
 
 @pytest.mark.asyncio

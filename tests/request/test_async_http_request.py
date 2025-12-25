@@ -1,7 +1,7 @@
 import pytest
-from lia.request import AsyncHTTPRequest
-from lia.request._base import FormData
-from lia.request._testing import TestingRequestAdapter
+from cross_web.request import AsyncHTTPRequest
+from cross_web.request._base import FormData
+from cross_web.request._testing import TestingRequestAdapter
 
 
 def test_async_http_request_init() -> None:
