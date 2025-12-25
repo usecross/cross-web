@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 import pytest
 
-from lia import StarletteRequestAdapter
+from cross_web import StarletteRequestAdapter
 
 pytestmark = [pytest.mark.starlette]
 

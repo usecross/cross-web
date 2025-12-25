@@ -1,6 +1,6 @@
 import pytest
 
-from lia import LitestarRequestAdapter
+from cross_web import LitestarRequestAdapter
 
 pytestmark = [pytest.mark.litestar]
 

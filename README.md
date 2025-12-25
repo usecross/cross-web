@@ -1,16 +1,20 @@
-# Lia
+# Cross
 
 **Write once, run everywhere** - A universal web framework adapter for Python that lets you write code once and use it across multiple web frameworks.
 
 ## Installation
 
 ```bash
-uv add lia-web
+uv add cross-web
+```
+
+```python
+from cross_web import Response
 ```
 
 ## Overview
 
-Lia provides a unified interface for common web framework operations, allowing you to write framework-agnostic code that can be easily adapted to work with FastAPI, Flask, Django, and other popular Python web frameworks.
+Cross provides a unified interface for common web framework operations, allowing you to write framework-agnostic code that can be easily adapted to work with FastAPI, Flask, Django, and other popular Python web frameworks.
 
 ## Features
 

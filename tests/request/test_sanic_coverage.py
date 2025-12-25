@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 def test_sanic_process_files_none() -> None:
     """Test Sanic process_files with None files - line 29"""
-    from lia.request._sanic import convert_request_to_files_dict
+    from cross_web.request._sanic import convert_request_to_files_dict
 
     # Mock request with None files
     request = Mock()
@@ -20,7 +20,7 @@ def test_sanic_process_files_none() -> None:
 
 def test_sanic_process_files_empty() -> None:
     """Test Sanic process_files with empty files - line 29"""
-    from lia.request._sanic import convert_request_to_files_dict
+    from cross_web.request._sanic import convert_request_to_files_dict
 
     # Mock request with empty files dict
     request = Mock()

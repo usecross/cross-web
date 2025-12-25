@@ -1,4 +1,4 @@
-from lia.response import Cookie, Response
+from cross_web.response import Cookie, Response
 
 
 def test_cookie_creation() -> None:

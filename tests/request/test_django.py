@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from lia import AsyncDjangoHTTPRequestAdapter, DjangoHTTPRequestAdapter
+from cross_web import AsyncDjangoHTTPRequestAdapter, DjangoHTTPRequestAdapter
 
 pytestmark = [pytest.mark.django]
 

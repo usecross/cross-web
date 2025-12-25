@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.9"
 resolution-markers = [
     "python_full_version >= '3.10'",
@@ -428,6 +428,76 @@ wheels = [
 [package.optional-dependencies]
 toml = [
     { name = "tomli", marker = "python_full_version <= '3.11'" },
+]
+
+[[package]]
+name = "cross-web"
+version = "0.2.3"
+source = { editable = "." }
+dependencies = [
+    { name = "typing-extensions" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "coverage", extra = ["toml"] },
+    { name = "inline-snapshot" },
+    { name = "mypy" },
+    { name = "nox" },
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
+integrations = [
+    { name = "aiohttp" },
+    { name = "chalice" },
+    { name = "django", version = "4.2.23", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "django", version = "5.2.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "fastapi" },
+    { name = "flask" },
+    { name = "httpx" },
+    { name = "litestar" },
+    { name = "python-multipart" },
+    { name = "quart" },
+    { name = "sanic" },
+    { name = "sanic-testing" },
+    { name = "starlette" },
+    { name = "werkzeug" },
+    { name = "yarl" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "typing-extensions", specifier = ">=4.14.0" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "coverage", extras = ["toml"], specifier = ">=7.8.0" },
+    { name = "inline-snapshot", specifier = ">=0.20.10" },
+    { name = "mypy", specifier = ">=1.13.0" },
+    { name = "nox", specifier = ">=2024.10.9" },
+    { name = "pre-commit", specifier = ">=4.0.1" },
+    { name = "pytest", specifier = ">=7.4.4" },
+    { name = "pytest-asyncio", specifier = ">=0.23.8" },
+    { name = "pytest-cov", specifier = ">=6.0.0" },
+    { name = "ruff", specifier = ">=0.8.0" },
+]
+integrations = [
+    { name = "aiohttp", specifier = ">=3.9" },
+    { name = "chalice", specifier = ">=1.29" },
+    { name = "django", specifier = ">=4.2" },
+    { name = "fastapi", specifier = ">=0.115.12" },
+    { name = "flask", specifier = ">=2.3" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "litestar", specifier = ">=2.0" },
+    { name = "python-multipart", specifier = ">=0.0.20" },
+    { name = "quart", specifier = ">=0.19" },
+    { name = "sanic", specifier = ">=23.0" },
+    { name = "sanic-testing", specifier = ">=23.0" },
+    { name = "starlette", specifier = ">=0.46.1" },
+    { name = "werkzeug", specifier = ">=2.3" },
+    { name = "yarl", specifier = ">=1.9" },
 ]
 
 [[package]]
@@ -955,76 +1025,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/00/2a/e867e8531cf3e36b41201936b7fa7ba7b5702dbef42922193f05c8976cd6/jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe", size = 25843, upload-time = "2022-06-17T18:00:12.224Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980", size = 20256, upload-time = "2022-06-17T18:00:10.251Z" },
-]
-
-[[package]]
-name = "lia-web"
-version = "0.2.1"
-source = { editable = "." }
-dependencies = [
-    { name = "typing-extensions" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "coverage", extra = ["toml"] },
-    { name = "inline-snapshot" },
-    { name = "mypy" },
-    { name = "nox" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-]
-integrations = [
-    { name = "aiohttp" },
-    { name = "chalice" },
-    { name = "django", version = "4.2.23", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "django", version = "5.2.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "fastapi" },
-    { name = "flask" },
-    { name = "httpx" },
-    { name = "litestar" },
-    { name = "python-multipart" },
-    { name = "quart" },
-    { name = "sanic" },
-    { name = "sanic-testing" },
-    { name = "starlette" },
-    { name = "werkzeug" },
-    { name = "yarl" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "typing-extensions", specifier = ">=4.14.0" }]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "coverage", extras = ["toml"], specifier = ">=7.8.0" },
-    { name = "inline-snapshot", specifier = ">=0.20.10" },
-    { name = "mypy", specifier = ">=1.13.0" },
-    { name = "nox", specifier = ">=2024.10.9" },
-    { name = "pre-commit", specifier = ">=4.0.1" },
-    { name = "pytest", specifier = ">=7.4.4" },
-    { name = "pytest-asyncio", specifier = ">=0.23.8" },
-    { name = "pytest-cov", specifier = ">=6.0.0" },
-    { name = "ruff", specifier = ">=0.8.0" },
-]
-integrations = [
-    { name = "aiohttp", specifier = ">=3.9" },
-    { name = "chalice", specifier = ">=1.29" },
-    { name = "django", specifier = ">=4.2" },
-    { name = "fastapi", specifier = ">=0.115.12" },
-    { name = "flask", specifier = ">=2.3" },
-    { name = "httpx", specifier = ">=0.28.1" },
-    { name = "litestar", specifier = ">=2.0" },
-    { name = "python-multipart", specifier = ">=0.0.20" },
-    { name = "quart", specifier = ">=0.19" },
-    { name = "sanic", specifier = ">=23.0" },
-    { name = "sanic-testing", specifier = ">=23.0" },
-    { name = "starlette", specifier = ">=0.46.1" },
-    { name = "werkzeug", specifier = ">=2.3" },
-    { name = "yarl", specifier = ">=1.9" },
 ]
 
 [[package]]

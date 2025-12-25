@@ -3,7 +3,7 @@ Test specific lines that are missing coverage
 """
 
 from unittest.mock import Mock
-from lia import (
+from cross_web import (
     DjangoHTTPRequestAdapter,
     FlaskHTTPRequestAdapter,
     SanicHTTPRequestAdapter,
@@ -61,13 +61,13 @@ def test_chalice_adapter_json_body_line_79() -> None:
 # Test the TYPE_CHECKING imports (lines 8)
 def test_imports_exist() -> None:
     """Test that all adapters can be imported"""
-    from lia.request._starlette import StarletteRequestAdapter
-    from lia.request._quart import QuartHTTPRequestAdapter
-    from lia.request._litestar import LitestarRequestAdapter
-    from lia.request._aiohttp import AiohttpHTTPRequestAdapter
-    from lia.request._sanic import SanicHTTPRequestAdapter
-    from lia.request._chalice import ChaliceHTTPRequestAdapter
-    from lia.request import AsyncHTTPRequest
+    from cross_web.request._starlette import StarletteRequestAdapter
+    from cross_web.request._quart import QuartHTTPRequestAdapter
+    from cross_web.request._litestar import LitestarRequestAdapter
+    from cross_web.request._aiohttp import AiohttpHTTPRequestAdapter
+    from cross_web.request._sanic import SanicHTTPRequestAdapter
+    from cross_web.request._chalice import ChaliceHTTPRequestAdapter
+    from cross_web.request import AsyncHTTPRequest
 
     # Just verify they exist
     assert StarletteRequestAdapter is not None
@@ -82,6 +82,6 @@ def test_imports_exist() -> None:
 # Test response.py line 10 (TYPE_CHECKING import)
 def test_response_import() -> None:
     """Test Response can be imported"""
-    from lia.response import Response
+    from cross_web.response import Response
 
     assert Response is not None

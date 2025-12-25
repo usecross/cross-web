@@ -1,6 +1,6 @@
 import pytest
 
-from lia import Response
+from cross_web import Response
 
 pytestmark = [pytest.mark.fastapi]
 

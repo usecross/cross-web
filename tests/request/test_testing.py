@@ -1,6 +1,6 @@
 import pytest
-from lia.request._testing import TestingRequestAdapter
-from lia.request._base import FormData
+from cross_web.request._testing import TestingRequestAdapter
+from cross_web.request._base import FormData
 
 
 @pytest.mark.asyncio

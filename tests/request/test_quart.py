@@ -1,6 +1,6 @@
 import pytest
 
-from lia import QuartHTTPRequestAdapter
+from cross_web import QuartHTTPRequestAdapter
 
 pytestmark = [pytest.mark.quart]
 

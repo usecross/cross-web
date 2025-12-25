@@ -1,5 +1,5 @@
 import pytest
-from lia.exceptions import HTTPException
+from cross_web.exceptions import HTTPException
 
 
 def test_http_exception_initialization() -> None:

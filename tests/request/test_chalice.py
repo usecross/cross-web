@@ -1,6 +1,6 @@
 import pytest
 
-from lia import ChaliceHTTPRequestAdapter
+from cross_web import ChaliceHTTPRequestAdapter
 
 pytestmark = [pytest.mark.chalice]
 
