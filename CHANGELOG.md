@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+0.4.1 - 2026-01-09
+------------------
+
+Add missing metadata fields to pyproject.toml for improved PyPI discoverability:
+
+- `license` field
+- `keywords` for search
+- `[project.urls]` with links to Homepage, Repository, Issues, and Changelog
+
 0.4.0 - 2025-12-25
 ------------------
 
