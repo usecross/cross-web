@@ -8,6 +8,7 @@ HTTPMethod = Literal[
 ]
 
 QueryParams = Mapping[str, Optional[str]]
+PathParams = Mapping[str, Any]
 
 
 @dataclass
@@ -35,6 +36,12 @@ class SyncHTTPRequestAdapter(abc.ABC):
     @abc.abstractmethod
     def query_params(self) -> QueryParams:
         """The query parameters of the request."""
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def path_params(self) -> PathParams:
+        """The path parameters of the request."""
         raise NotImplementedError
 
     @property
@@ -106,6 +113,12 @@ class AsyncHTTPRequestAdapter(abc.ABC):
     @abc.abstractmethod
     def query_params(self) -> QueryParams:
         """The query parameters of the request."""
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def path_params(self) -> PathParams:
+        """The path parameters of the request."""
         raise NotImplementedError
 
     @property

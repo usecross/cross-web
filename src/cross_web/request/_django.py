@@ -23,6 +23,12 @@ class DjangoHTTPRequestAdapter(SyncHTTPRequestAdapter):
         return cast(QueryParams, self.request.GET.dict())
 
     @property
+    def path_params(self) -> Mapping[str, Any]:
+        if self.request.resolver_match is None:
+            return {}
+        return cast(Mapping[str, Any], self.request.resolver_match.kwargs)
+
+    @property
     def body(self) -> Union[str, bytes]:
         return cast(Union[str, bytes], self.request.body.decode())
 
@@ -70,6 +76,12 @@ class AsyncDjangoHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def query_params(self) -> QueryParams:
         return cast(QueryParams, self.request.GET.dict())
+
+    @property
+    def path_params(self) -> Mapping[str, Any]:
+        if self.request.resolver_match is None:
+            return {}
+        return cast(Mapping[str, Any], self.request.resolver_match.kwargs)
 
     @property
     def method(self) -> HTTPMethod:

@@ -7,7 +7,13 @@ from typing_extensions import Self
 if TYPE_CHECKING:
     from starlette.requests import Request as StarletteRequest
 
-from ._base import AsyncHTTPRequestAdapter, FormData, HTTPMethod, QueryParams
+from ._base import (
+    AsyncHTTPRequestAdapter,
+    FormData,
+    HTTPMethod,
+    PathParams,
+    QueryParams,
+)
 from ._starlette import StarletteRequestAdapter
 from ._testing import TestingRequestAdapter
 
@@ -91,6 +97,11 @@ class AsyncHTTPRequest:
     def query_params(self) -> QueryParams:
         """The query parameters of the request."""
         return self._adapter.query_params
+
+    @property
+    def path_params(self) -> PathParams:
+        """The path parameters of the request."""
+        return self._adapter.path_params
 
     @property
     def headers(self) -> Mapping[str, str]:

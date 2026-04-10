@@ -9,6 +9,7 @@ async def test_testing_request_adapter_defaults() -> None:
 
     assert adapter.method == "POST"
     assert adapter.query_params == {}
+    assert adapter.path_params == {}
     assert adapter.headers == {}
     assert adapter.content_type is None
     assert adapter.url == "http://testserver/"
@@ -27,6 +28,7 @@ async def test_testing_request_adapter_custom_values() -> None:
     adapter = TestingRequestAdapter(
         method="GET",
         query_params={"key": "value"},
+        path_params={"user_id": "123"},
         headers={"X-Custom": "header"},
         content_type="application/json",
         url="http://example.com/test",
@@ -36,6 +38,7 @@ async def test_testing_request_adapter_custom_values() -> None:
 
     assert adapter.method == "GET"
     assert adapter.query_params == {"key": "value"}
+    assert adapter.path_params == {"user_id": "123"}
     assert adapter.headers == {"X-Custom": "header"}
     assert adapter.content_type == "application/json"
     assert adapter.url == "http://example.com/test"

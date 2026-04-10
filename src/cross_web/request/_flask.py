@@ -23,6 +23,10 @@ class FlaskHTTPRequestAdapter(SyncHTTPRequestAdapter):
         return self.request.args.to_dict()
 
     @property
+    def path_params(self) -> Mapping[str, Any]:
+        return cast(Mapping[str, Any], self.request.view_args or {})
+
+    @property
     def body(self) -> Union[str, bytes]:
         return self.request.data.decode()
 
@@ -68,6 +72,10 @@ class AsyncFlaskHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def query_params(self) -> QueryParams:
         return self.request.args.to_dict()
+
+    @property
+    def path_params(self) -> Mapping[str, Any]:
+        return cast(Mapping[str, Any], self.request.view_args or {})
 
     @property
     def method(self) -> HTTPMethod:

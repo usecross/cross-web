@@ -17,6 +17,10 @@ class LitestarRequestAdapter(AsyncHTTPRequestAdapter):
         return self.request.query_params
 
     @property
+    def path_params(self) -> Mapping[str, Any]:
+        return cast(Mapping[str, Any], self.request.path_params)
+
+    @property
     def method(self) -> HTTPMethod:
         return cast("HTTPMethod", self.request.method.upper())
 
