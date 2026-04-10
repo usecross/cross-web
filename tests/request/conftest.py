@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 
-from .clients.base import RequestClient
+from cross_web.testing.clients.base import RequestClient
 
 
 def _get_request_client_classes() -> Generator[Any, None, None]:
@@ -22,7 +22,9 @@ def _get_request_client_classes() -> Generator[Any, None, None]:
     ]:
         try:
             client_class = getattr(
-                importlib.import_module(f".{module}", package="tests.request.clients"),
+                importlib.import_module(
+                    f".{module}", package="cross_web.testing.clients"
+                ),
                 client,
             )
         except ImportError:

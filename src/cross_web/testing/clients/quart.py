@@ -6,7 +6,7 @@ import json
 from quart import Quart, request
 from werkzeug.datastructures import FileStorage
 
-from cross_web import QuartHTTPRequestAdapter
+from cross_web.request._quart import QuartHTTPRequestAdapter
 
 from .base import (
     FormRequestResult,

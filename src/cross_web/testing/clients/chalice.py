@@ -5,7 +5,7 @@ import json
 from chalice.app import Chalice
 from chalice.test import Client
 
-from cross_web import ChaliceHTTPRequestAdapter
+from cross_web.request._chalice import ChaliceHTTPRequestAdapter
 
 from .base import JSONRequestResult, RequestClient, build_json_result, get_content_type
 

@@ -8,7 +8,10 @@ import json
 
 from flask import Flask, request
 
-from cross_web import AsyncFlaskHTTPRequestAdapter, FlaskHTTPRequestAdapter
+from cross_web.request._flask import (
+    AsyncFlaskHTTPRequestAdapter,
+    FlaskHTTPRequestAdapter,
+)
 
 from .base import (
     FormRequestResult,

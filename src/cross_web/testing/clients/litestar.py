@@ -5,7 +5,7 @@ import json
 from litestar import Litestar, Request, post
 from litestar.testing import TestClient
 
-from cross_web import LitestarRequestAdapter
+from cross_web.request._litestar import LitestarRequestAdapter
 
 from .base import (
     FormRequestResult,

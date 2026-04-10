@@ -7,7 +7,7 @@ from sanic import Sanic
 from sanic.request import Request
 from sanic.response import json as sanic_json
 
-from cross_web import SanicHTTPRequestAdapter
+from cross_web.request._sanic import SanicHTTPRequestAdapter
 
 from .base import (
     FormRequestResult,

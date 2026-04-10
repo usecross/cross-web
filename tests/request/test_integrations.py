@@ -1,6 +1,6 @@
 import pytest
 
-from .clients.base import RequestClient
+from cross_web.testing.clients.base import RequestClient
 
 
 @pytest.mark.asyncio

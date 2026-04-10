@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import io
 import json
 
-from starlette.applications import Starlette
-from starlette.responses import JSONResponse
-from starlette.routing import Route
-from starlette.testclient import TestClient
+from aiohttp import FormData, web
+from aiohttp.test_utils import TestClient, TestServer
 
-from cross_web import StarletteRequestAdapter
+from cross_web.request._aiohttp import AiohttpHTTPRequestAdapter
 
 from .base import (
     FormRequestResult,
@@ -21,13 +18,13 @@ from .base import (
 )
 
 
-class StarletteRequestClient(RequestClient):
+class AiohttpRequestClient(RequestClient):
     async def json_request(self) -> JSONRequestResult:
-        async def handler(request) -> JSONResponse:
-            adapter = StarletteRequestAdapter(request)
+        async def handler(request: web.Request) -> web.Response:
+            adapter = await AiohttpHTTPRequestAdapter.create(request)
             body = await adapter.get_body()
 
-            return JSONResponse(
+            return web.json_response(
                 {
                     "query_params": dict(adapter.query_params),
                     "method": adapter.method,
@@ -39,20 +36,24 @@ class StarletteRequestClient(RequestClient):
                 }
             )
 
-        app = Starlette(routes=[Route("/json/{item_id}", handler, methods=["POST"])])
+        app = web.Application()
+        app.router.add_post("/json/{item_id}", handler)
 
-        with TestClient(app) as client:
-            client.cookies.set("session", "123")
-            response = client.post("/json/abc?query=test", json={"key": "value"})
+        async with TestClient(TestServer(app)) as client:
+            response = await client.post(
+                "/json/abc?query=test",
+                json={"key": "value"},
+                cookies={"session": "123"},
+            )
 
-        return build_json_result(response.json())
+            return build_json_result(await response.json())
 
     async def form_request(self) -> FormRequestResult:
-        async def handler(request) -> JSONResponse:
-            adapter = StarletteRequestAdapter(request)
+        async def handler(request: web.Request) -> web.Response:
+            adapter = await AiohttpHTTPRequestAdapter.create(request)
             form_data = await adapter.get_form_data()
 
-            return JSONResponse(
+            return web.json_response(
                 {
                     "query_params": dict(adapter.query_params),
                     "method": adapter.method,
@@ -65,14 +66,19 @@ class StarletteRequestClient(RequestClient):
                 }
             )
 
-        app = Starlette(routes=[Route("/form/{item_id}", handler, methods=["POST"])])
+        app = web.Application()
+        app.router.add_post("/form/{item_id}", handler)
 
-        with TestClient(app) as client:
-            client.cookies.set("session", "123")
-            response = client.post(
+        async with TestClient(TestServer(app)) as client:
+            data = FormData()
+            data.add_field("form", "data")
+            data.add_field(
+                "file", b"upload", filename="test.txt", content_type="text/plain"
+            )
+            response = await client.post(
                 "/form/abc?query=test",
-                data={"form": "data"},
-                files={"file": ("test.txt", io.BytesIO(b"upload"), "text/plain")},
+                data=data,
+                cookies={"session": "123"},
             )
 
-        return build_form_result(response.json())
+            return build_form_result(await response.json())
