@@ -98,6 +98,25 @@ module = [
 ]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = [
+    "pytest",
+    "_pytest.*",
+]
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = [
+    "tests.*",
+]
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = [
+    "cross_web.testing.clients.sanic",
+]
+disable_error_code = ["misc"]
+
 [tool.pytest.ini_options]
 markers = [
     "aiohttp: marks tests for aiohttp framework",

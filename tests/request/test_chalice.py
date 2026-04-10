@@ -59,6 +59,32 @@ def test_chalice_adapter_no_stage() -> None:
     assert adapter.url == "https://api.example.com/test"
 
 
+def test_chalice_adapter_non_prod_stage() -> None:
+    """Test Chalice adapter with non-prod stage - line 60"""
+    from chalice.app import Request
+
+    event = {
+        "headers": {},
+        "multiValueQueryStringParameters": {},
+        "pathParameters": None,
+        "stageVariables": None,
+        "body": "",
+        "isBase64Encoded": False,
+        "requestContext": {
+            "httpMethod": "GET",
+            "stage": "dev",
+            "domainName": "api.example.com",
+            "path": "/test",
+            "resourcePath": "/test",
+        },
+    }
+
+    request = Request(event)
+    adapter = ChaliceHTTPRequestAdapter(request)
+
+    assert adapter.url == "https://api.example.com/dev/test"
+
+
 def test_chalice_adapter_no_cookies() -> None:
     """Test Chalice adapter with no cookies - line 79"""
     from chalice.app import Request
