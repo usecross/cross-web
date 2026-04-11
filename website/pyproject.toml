@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Cross Web documentation website"
 requires-python = ">=3.10"
 dependencies = [
-    "cross-docs[api]>=0.15.0",
+    "cross-docs>=0.15.0",
     "fastapi[standard]>=0.100.0",
     "jinja2>=3.1.6",
     "pybun>=1.3.4",
@@ -26,10 +26,6 @@ github_url = "https://github.com/usecross/cross-web"
 [[tool.cross-docs.nav_links]]
 label = "Docs"
 href = "/docs/"
-
-[[tool.cross-docs.nav_links]]
-label = "API"
-href = "/api/"
 
 [tool.cross-docs.home]
 enabled = true
@@ -55,10 +51,3 @@ description = "Ship shared logic across FastAPI, Starlette, Flask, Django, Sanic
 [[tool.cross-docs.home.features]]
 title = "Built for tests"
 description = "Use TestingRequestAdapter and AsyncHTTPRequest.from_form_data to exercise request-handling code without spinning up a server."
-
-[[tool.cross-docs.api]]
-plugin = "python"
-package = "cross_web"
-prefix = "/api"
-component = "api/APIPage"
-search_paths = ["../src"]
