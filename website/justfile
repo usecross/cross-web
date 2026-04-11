@@ -1,0 +1,28 @@
+# Cross Web Website Development
+
+default:
+    @just --list
+
+install:
+    uv sync
+    uv run python -m pybun install
+
+dev:
+    INERTIA_DEV=1 uv run python app.py
+
+generate-api:
+    uv run cross-docs generate-api
+
+build:
+    uv run python -m pybun run build
+
+build-ssr:
+    uv run python -m pybun run build:ssr
+
+build-all: generate-api build build-ssr
+
+clean:
+    rm -rf frontend/dist node_modules .venv static/build __pycache__
+
+setup: install generate-api
+    @echo "Ready. Run 'just dev' to start the docs site."

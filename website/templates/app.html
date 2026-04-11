@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title or "Cross Web" }}</title>
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('cross-docs-theme');
+          var theme = stored === 'light' || stored === 'dark' ? stored :
+                      (stored === 'system' || !stored) && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.classList.add(theme);
+        } catch (e) {}
+      })();
+    </script>
+    {{ vite_tags | safe }}
+  </head>
+  <body>
+    <script data-page="app" type="application/json">{{ page | safe }}</script>
+    <div id="app"></div>
+  </body>
+</html>

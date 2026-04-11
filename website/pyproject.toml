@@ -1,0 +1,64 @@
+[project]
+name = "cross-web-website"
+version = "0.1.0"
+description = "Cross Web documentation website"
+requires-python = ">=3.10"
+dependencies = [
+    "cross-docs[api]>=0.15.0",
+    "fastapi[standard]>=0.100.0",
+    "jinja2>=3.1.6",
+    "pybun>=1.3.4",
+    "uvicorn[standard]>=0.20.0",
+]
+
+[dependency-groups]
+dev = [
+    "watchfiles>=0.20.0",
+]
+
+[tool.cross-docs]
+content_dir = "content"
+prefix = "/docs"
+index_page = "introduction"
+section_order = ["Getting Started", "Requests", "Responses", "Testing"]
+github_url = "https://github.com/usecross/cross-web"
+
+[[tool.cross-docs.nav_links]]
+label = "Docs"
+href = "/docs/"
+
+[[tool.cross-docs.nav_links]]
+label = "API"
+href = "/api/"
+
+[tool.cross-docs.home]
+enabled = true
+title = "Cross Web"
+tagline = "Universal web adapter"
+description = "Normalize request access and portable response handling across Python web frameworks without rewriting your core logic for each stack."
+install_command = "uv add cross-web"
+cta_text = "Read the docs"
+cta_href = "/docs/"
+
+[[tool.cross-docs.home.features]]
+title = "One request shape"
+description = "Use AsyncHTTPRequest or framework adapters to read method, headers, query params, cookies, body, and form data through one interface."
+
+[[tool.cross-docs.home.features]]
+title = "Portable responses"
+description = "Model redirects, headers, cookies, and response bodies with a small Response object that can be converted to FastAPI or mapped elsewhere."
+
+[[tool.cross-docs.home.features]]
+title = "Broad framework coverage"
+description = "Ship shared logic across FastAPI, Starlette, Flask, Django, Sanic, Quart, Litestar, aiohttp, and Chalice with the adapters already in the package."
+
+[[tool.cross-docs.home.features]]
+title = "Built for tests"
+description = "Use TestingRequestAdapter and AsyncHTTPRequest.from_form_data to exercise request-handling code without spinning up a server."
+
+[[tool.cross-docs.api]]
+plugin = "python"
+package = "cross_web"
+prefix = "/api"
+component = "api/APIPage"
+search_paths = ["../src"]

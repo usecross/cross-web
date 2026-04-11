@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import '@usecross/docs/styles.css';
+
+@source "./**/*.{ts,tsx}";
+@source "../node_modules/@usecross/docs";
+
+@theme {
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
+  --font-heading: 'Space Grotesk', 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-primary-50: color-mix(in srgb, #0f766e 8%, white);
+  --color-primary-100: color-mix(in srgb, #0f766e 16%, white);
+  --color-primary-200: color-mix(in srgb, #0f766e 28%, white);
+  --color-primary-300: color-mix(in srgb, #0f766e 45%, white);
+  --color-primary-400: color-mix(in srgb, #0f766e 70%, white);
+  --color-primary-500: #0f766e;
+  --color-primary-600: color-mix(in srgb, #0f766e 88%, black);
+  --color-primary-700: color-mix(in srgb, #0f766e 72%, black);
+  --color-primary-800: color-mix(in srgb, #0f766e 55%, black);
+  --color-primary-900: color-mix(in srgb, #0f766e 36%, black);
+  --color-primary-950: color-mix(in srgb, #0f766e 18%, black);
+}
+
+@layer base {
+  body {
+    background:
+      radial-gradient(circle at top left, rgb(20 184 166 / 0.08), transparent 28%),
+      radial-gradient(circle at top right, rgb(56 189 248 / 0.08), transparent 24%),
+      linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  }
+
+  .dark body,
+  :root.dark body {
+    background:
+      radial-gradient(circle at top left, rgb(45 212 191 / 0.12), transparent 30%),
+      radial-gradient(circle at top right, rgb(96 165 250 / 0.1), transparent 24%),
+      linear-gradient(180deg, #020617 0%, #0f172a 100%);
+  }
+}
