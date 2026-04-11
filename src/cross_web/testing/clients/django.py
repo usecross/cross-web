@@ -12,38 +12,8 @@ from django.test.client import AsyncRequestFactory, RequestFactory
 from .base import HttpClient, RequestData, Response, UploadedFile, merge_cookies
 
 
-def ensure_django_setup() -> None:
-    import django
-    from django.conf import settings
-
-    if settings.configured:
-        return
-
-    settings.configure(
-        DEBUG=True,
-        SECRET_KEY="test-secret-key",
-        DEFAULT_CHARSET="utf-8",
-        USE_TZ=True,
-        ALLOWED_HOSTS=["*"],
-        INSTALLED_APPS=[
-            "django.contrib.contenttypes",
-            "django.contrib.auth",
-        ],
-        MIDDLEWARE=[],
-        ROOT_URLCONF=__name__,
-        DATABASES={
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-                "NAME": ":memory:",
-            }
-        },
-    )
-    django.setup()
-
-
 class DjangoHttpClient(HttpClient):
     def __init__(self, view: Callable[[HttpRequest], HttpResponse]) -> None:
-        ensure_django_setup()
         self.view = view
 
     def _to_django_headers(self, headers: Mapping[str, str]) -> dict[str, str]:
@@ -136,7 +106,6 @@ class DjangoHttpClient(HttpClient):
 
 class AsyncDjangoHttpClient(HttpClient):
     def __init__(self, view: Callable[[HttpRequest], Awaitable[HttpResponse]]) -> None:
-        ensure_django_setup()
         self.view = view
 
     def _to_django_headers(self, headers: Mapping[str, str]) -> dict[str, str]:

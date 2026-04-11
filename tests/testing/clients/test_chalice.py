@@ -4,6 +4,9 @@ from types import SimpleNamespace
 from typing import cast
 
 import pytest
+
+pytest.importorskip("chalice")
+
 from chalice.app import Chalice
 
 from cross_web.testing.clients import chalice as chalice_client_module

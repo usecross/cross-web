@@ -35,6 +35,7 @@ packages = ["src/cross_web"]
 dev = [
     "pytest>=7.4.4",
     "pytest-asyncio>=0.23.8",
+    "pytest-django>=4.11.0",
     "pytest-cov>=6.0.0",
     "inline-snapshot>=0.20.10",
     "coverage[toml]>=7.8.0",
@@ -43,6 +44,7 @@ dev = [
     "mypy>=1.13.0",
     "pre-commit>=4.0.1",
     "fastapi[standard]>=0.115.12",
+    "django>=4.2",
 ]
 
 integrations = [
@@ -50,7 +52,6 @@ integrations = [
     "httpx>=0.28.1",
     "python-multipart>=0.0.20",
     "starlette>=0.46.1",
-    "django>=4.2",
     "flask>=2.3",
     "werkzeug>=2.3",
     "sanic>=23.0",
@@ -118,6 +119,7 @@ module = [
 disable_error_code = ["misc"]
 
 [tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "cross_web.testing._django_settings"
 markers = [
     "aiohttp: marks tests for aiohttp framework",
     "chalice: marks tests for chalice framework",

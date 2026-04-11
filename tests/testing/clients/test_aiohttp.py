@@ -1,5 +1,8 @@
-from aiohttp import web
 import pytest
+
+pytest.importorskip("aiohttp")
+
+from aiohttp import web
 
 from cross_web.testing.clients.aiohttp import AiohttpHttpClient
 

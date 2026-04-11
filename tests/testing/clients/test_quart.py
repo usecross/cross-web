@@ -1,5 +1,8 @@
-from quart import Quart
 import pytest
+
+pytest.importorskip("quart")
+
+from quart import Quart
 
 from cross_web.testing.clients.quart import QuartHttpClient
 

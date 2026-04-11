@@ -1,5 +1,8 @@
-from flask import Flask
 import pytest
+
+pytest.importorskip("flask")
+
+from flask import Flask
 
 from cross_web.testing.clients.flask import FlaskHttpClient
 

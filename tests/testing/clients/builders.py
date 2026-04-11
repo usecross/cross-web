@@ -120,9 +120,6 @@ def create_django_view() -> Any:
     from django.http import HttpRequest, JsonResponse
 
     from cross_web.request._django import DjangoHTTPRequestAdapter
-    from cross_web.testing.clients.django import ensure_django_setup
-
-    ensure_django_setup()
 
     def view(request: HttpRequest) -> JsonResponse:
         adapter = DjangoHTTPRequestAdapter(request)
@@ -148,9 +145,6 @@ def create_async_django_view() -> Any:
     from django.http import HttpRequest, JsonResponse
 
     from cross_web.request._django import AsyncDjangoHTTPRequestAdapter
-    from cross_web.testing.clients.django import ensure_django_setup
-
-    ensure_django_setup()
 
     async def view(request: HttpRequest) -> JsonResponse:
         adapter = AsyncDjangoHTTPRequestAdapter(request)

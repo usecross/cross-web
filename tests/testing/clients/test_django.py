@@ -1,14 +1,22 @@
 from __future__ import annotations
 
+import pytest
+
+pytest.importorskip("django")
+
 from django.core.exceptions import BadRequest
 from django.http import Http404, HttpRequest, HttpResponse
 from django.test.client import AsyncRequestFactory, RequestFactory
-import pytest
 
+from cross_web.testing import _django_urls
 from cross_web.testing.clients import django as django_client_module
 from cross_web.testing.clients.django import AsyncDjangoHttpClient, DjangoHttpClient
 
 pytestmark = [pytest.mark.django]
+
+
+def test_django_test_urlconf_is_empty() -> None:
+    assert _django_urls.urlpatterns == []
 
 
 def test_sync_build_request_data_requires_mapping_for_files() -> None:
