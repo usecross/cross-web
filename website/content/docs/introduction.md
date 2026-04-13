@@ -17,6 +17,7 @@ It is useful when your business logic needs to work across more than one web fra
 - Framework-specific adapters expose the same core request fields for frameworks that differ heavily at the edge.
 - `Response` and `Cookie` let you describe a response in plain Python before converting it into a framework response object.
 - `HTTPException` gives shared code a lightweight exception type for HTTP failures.
+- `cross_web.testing` adds request fakes and framework test clients for reusable tests.
 
 ## Supported adapters
 

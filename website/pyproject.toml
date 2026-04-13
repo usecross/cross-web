@@ -50,4 +50,4 @@ description = "Ship shared logic across FastAPI, Starlette, Flask, Django, Sanic
 
 [[tool.cross-docs.home.features]]
 title = "Built for tests"
-description = "Use TestingRequestAdapter and AsyncHTTPRequest.from_form_data to exercise request-handling code without spinning up a server."
+description = "Use TestingRequestAdapter for focused unit tests or cross_web.testing.clients for request-level integration checks without a live server."
