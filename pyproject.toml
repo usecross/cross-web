@@ -73,7 +73,7 @@ parallel = true
 [tool.coverage.report]
 show_missing = true
 sort = "-Cover"
-exclude_lines = [
+exclude_also = [
     "pragma: no cover",
     "raise NotImplementedError",
     "if TYPE_CHECKING:",

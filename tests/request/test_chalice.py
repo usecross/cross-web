@@ -18,7 +18,7 @@ def test_chalice_adapter_prod_stage() -> None:
         "isBase64Encoded": False,
         "requestContext": {
             "httpMethod": "GET",
-            "stage": "prod",  # This triggers line 62
+            "stage": "prod",
             "domainName": "api.example.com",
             "path": "/test",
             "resourcePath": "/test",
