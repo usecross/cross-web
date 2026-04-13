@@ -19,3 +19,15 @@ Cross provides a unified interface for common web framework operations, allowing
 ## Features
 
 This project is in early development!
+
+## Documentation website
+
+The repository now includes a Cross-Docs-powered website in [`website/`](website).
+
+```bash
+cd website
+just setup
+just dev
+```
+
+That setup uses `cross-docs` for the Python side, `@usecross/docs` on the frontend, the Inertia Vite plugin, and Inertia v3 packages.

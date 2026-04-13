@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+.venv/
+
+# Build output
+frontend/dist/
+static/build/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store

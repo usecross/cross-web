@@ -1,0 +1,4 @@
+!static/build/
+!static/build/**
+!frontend/dist/
+!frontend/dist/**
