@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+0.5.0 - 2026-04-13
+------------------
+
+Add `cross_web.testing.clients`, a shared request-integration client matrix
+for the supported frameworks.
+
+This moves the reusable request test harnesses out of `tests/` and into a
+package that other projects can import directly, including the Django test
+URLConf needed by the client suite.
+
 0.4.1 - 2026-01-09
 ------------------
 
