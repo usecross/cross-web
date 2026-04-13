@@ -1,3 +1,5 @@
+MIDDLEWARE: list[str] = []
+
 SECRET_KEY = "test-secret-key"
 DEBUG = True
 DEFAULT_CHARSET = "utf-8"
@@ -8,8 +10,6 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
 ]
-
-MIDDLEWARE = []
 ROOT_URLCONF = "cross_web.testing._django_urls"
 
 DATABASES = {
