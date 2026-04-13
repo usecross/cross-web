@@ -8,9 +8,9 @@ from django.core.exceptions import BadRequest
 from django.http import Http404, HttpRequest, HttpResponse
 from django.test.client import AsyncRequestFactory, RequestFactory
 
-from cross_web.testing import _django_urls
 from cross_web.testing.clients import django as django_client_module
 from cross_web.testing.clients.django import AsyncDjangoHttpClient, DjangoHttpClient
+from testing import _django_urls
 
 pytestmark = [pytest.mark.django]
 

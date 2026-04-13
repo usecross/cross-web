@@ -10,7 +10,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
 ]
-ROOT_URLCONF = "cross_web.testing._django_urls"
+ROOT_URLCONF = "testing._django_urls"
 
 DATABASES = {
     "default": {
