@@ -87,3 +87,13 @@ def test_merge_cookies_handles_missing_and_present_cookies() -> None:
         "X-Test": "1",
         "Cookie": "session=abc",
     }
+
+
+def test_merge_cookies_merges_existing_cookie_header() -> None:
+    assert merge_cookies(
+        {"X-Test": "1", "Cookie": "session=old; theme=dark"},
+        {"session": "new", "user": "patrick"},
+    ) == {
+        "X-Test": "1",
+        "Cookie": "session=new; theme=dark; user=patrick",
+    }

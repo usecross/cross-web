@@ -90,7 +90,16 @@ def merge_cookies(
         return headers
 
     merged_headers = dict(headers or {})
+    existing_cookie_header = merged_headers.pop("Cookie", "")
+    existing_cookies: dict[str, str] = {}
+
+    for cookie in existing_cookie_header.split(";"):
+        name, separator, value = cookie.strip().partition("=")
+        if separator and name:
+            existing_cookies[name] = value
+
+    combined_cookies = {**existing_cookies, **cookies}
     merged_headers["Cookie"] = "; ".join(
-        f"{name}={value}" for name, value in cookies.items()
+        f"{name}={value}" for name, value in combined_cookies.items()
     )
     return merged_headers
