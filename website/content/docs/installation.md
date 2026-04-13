@@ -25,6 +25,15 @@ The base package is small. Your actual web framework stays an application depend
 from cross_web import AsyncHTTPRequest, Cookie, HTTPException, Response
 ```
 
+Cross Web also exposes a testing API:
+
+```python
+from cross_web.testing import HttpClient
+from cross_web.testing.clients.starlette import StarletteHttpClient
+```
+
+Import concrete testing clients from their framework module. `cross_web.testing.clients` itself only exports the shared base types so importing it does not pull optional framework dependencies.
+
 If you want direct access to a specific adapter, those are also exported from the package root:
 
 ```python
@@ -53,3 +62,12 @@ Use direct adapters when you need framework-specific entry points or synchronous
 ## Framework dependencies
 
 Cross Web does not install every supported framework for you. Your project should already depend on the framework you are integrating with, plus any form parsing or testing extras that framework requires.
+
+That applies to the testing clients as well. Install the framework packages for the clients you use in tests.
+
+If you use the Django testing clients, configure Django in your test environment first. With `pytest-django`, a typical setup looks like:
+
+```toml
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "myproject.test_settings"
+```
