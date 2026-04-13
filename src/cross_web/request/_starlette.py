@@ -25,6 +25,10 @@ class StarletteRequestAdapter(AsyncHTTPRequestAdapter):
         return cast(QueryParams, self._request.query_params)
 
     @property
+    def path_params(self) -> Mapping[str, str]:
+        return cast(Mapping[str, str], self._request.path_params)
+
+    @property
     def headers(self) -> Mapping[str, str]:
         # Cache the immutable headers object for direct access
         # Starlette Headers are case-insensitive

@@ -53,6 +53,10 @@ class SanicHTTPRequestAdapter(AsyncHTTPRequestAdapter):
         return {k: args.get(k, None) for k in args}
 
     @property
+    def path_params(self) -> Mapping[str, Any]:
+        return cast(Mapping[str, Any], self.request.match_info or {})
+
+    @property
     def method(self) -> HTTPMethod:
         return cast("HTTPMethod", self.request.method.upper())
 

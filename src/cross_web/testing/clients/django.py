@@ -3,17 +3,30 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable, Iterable, Mapping
 from json import dumps
 from typing import Any
+from urllib.parse import urlsplit
 
 from django.core.exceptions import BadRequest, SuspiciousOperation
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import Http404, HttpRequest, HttpResponse, StreamingHttpResponse
 from django.test.client import AsyncRequestFactory, RequestFactory
+from django.urls import Resolver404, ResolverMatch, resolve
 
 from .base import HttpClient, RequestData, Response, UploadedFile, merge_cookies
 
 
+def resolve_view_match(view: object, url: str) -> ResolverMatch | None:
+    urlpatterns = getattr(view, "_cross_web_urlpatterns", None)
+    if urlpatterns is None:
+        return None
+
+    try:
+        return resolve(urlsplit(url).path, urlconf=tuple(urlpatterns))
+    except Resolver404:
+        return None
+
+
 class DjangoHttpClient(HttpClient):
-    def __init__(self, view: Callable[[HttpRequest], HttpResponse]) -> None:
+    def __init__(self, view: Callable[..., HttpResponse]) -> None:
         self.view = view
 
     def _to_django_headers(self, headers: Mapping[str, str]) -> dict[str, str]:
@@ -60,7 +73,15 @@ class DjangoHttpClient(HttpClient):
 
     async def _do_request(self, request: HttpRequest) -> Response:
         try:
-            response = self.view(request)
+            resolver_match = request.resolver_match
+            if resolver_match is None:
+                response = self.view(request)
+            else:
+                response = self.view(
+                    request,
+                    *resolver_match.args,
+                    **resolver_match.kwargs,
+                )
         except Http404:
             return Response(status_code=404, data=b"Not found")
         except (BadRequest, SuspiciousOperation) as exc:
@@ -98,6 +119,7 @@ class DjangoHttpClient(HttpClient):
         request = getattr(request_factory, method)(
             url, data=request_data, **request_kwargs
         )
+        request.resolver_match = resolve_view_match(self.view, url)
         if cookies is not None:
             request.COOKIES = dict(cookies)
 
@@ -105,7 +127,7 @@ class DjangoHttpClient(HttpClient):
 
 
 class AsyncDjangoHttpClient(HttpClient):
-    def __init__(self, view: Callable[[HttpRequest], Awaitable[HttpResponse]]) -> None:
+    def __init__(self, view: Callable[..., Awaitable[HttpResponse]]) -> None:
         self.view = view
 
     def _to_django_headers(self, headers: Mapping[str, str]) -> dict[str, str]:
@@ -152,7 +174,15 @@ class AsyncDjangoHttpClient(HttpClient):
 
     async def _do_request(self, request: HttpRequest) -> Response:
         try:
-            response = await self.view(request)
+            resolver_match = request.resolver_match
+            if resolver_match is None:
+                response = await self.view(request)
+            else:
+                response = await self.view(
+                    request,
+                    *resolver_match.args,
+                    **resolver_match.kwargs,
+                )
         except Http404:
             return Response(status_code=404, data=b"Not found")
         except (BadRequest, SuspiciousOperation) as exc:
@@ -198,6 +228,7 @@ class AsyncDjangoHttpClient(HttpClient):
         request = getattr(request_factory, method)(
             url, data=request_data, **request_kwargs
         )
+        request.resolver_match = resolve_view_match(self.view, url)
         if cookies is not None:
             request.COOKIES = dict(cookies)
 

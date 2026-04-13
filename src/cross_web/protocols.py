@@ -1,7 +1,7 @@
 from collections.abc import Mapping
 from typing import Optional, Protocol, Union
 
-from .request._base import HTTPMethod
+from .request._base import HTTPMethod, PathParams
 
 
 class BaseRequestProtocol(Protocol):
@@ -9,6 +9,9 @@ class BaseRequestProtocol(Protocol):
 
     @property
     def query_params(self) -> Mapping[str, Optional[Union[str, list[str]]]]: ...
+
+    @property
+    def path_params(self) -> PathParams: ...
 
     @property
     def method(self) -> HTTPMethod: ...

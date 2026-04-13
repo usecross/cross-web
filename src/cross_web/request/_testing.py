@@ -14,6 +14,7 @@ class TestingRequestAdapter(AsyncHTTPRequestAdapter):
         *,
         method: HTTPMethod = "POST",
         query_params: QueryParams | None = None,
+        path_params: Mapping[str, Any] | None = None,
         headers: Mapping[str, str] | None = None,
         content_type: str | None = None,
         url: str = "http://testserver/",
@@ -23,6 +24,7 @@ class TestingRequestAdapter(AsyncHTTPRequestAdapter):
     ) -> None:
         self._method = method
         self._query_params = query_params or {}
+        self._path_params = path_params or {}
         self._headers = headers or {}
         self._content_type = content_type
         self._url = url
@@ -37,6 +39,10 @@ class TestingRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def query_params(self) -> QueryParams:
         return self._query_params
+
+    @property
+    def path_params(self) -> Mapping[str, Any]:
+        return self._path_params
 
     @property
     def headers(self) -> Mapping[str, str]:

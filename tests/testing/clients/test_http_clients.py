@@ -8,7 +8,7 @@ from cross_web.testing import HttpClient
 @pytest.mark.asyncio
 async def test_request_adapter_json(http_client: HttpClient) -> None:
     response = await http_client.post(
-        "/request?query=test",
+        "/request/abc?query=test",
         json={"key": "value"},
         cookies={"session": "123"},
     )
@@ -16,10 +16,11 @@ async def test_request_adapter_json(http_client: HttpClient) -> None:
 
     assert response.status_code == 200
     assert result["query_params"] == {"query": "test"}
+    assert result["path_params"] == {"item_id": "abc"}
     assert result["method"] == "POST"
     assert result["header_content_type"] == "application/json"
     assert result["content_type"] == "application/json"
-    assert result["url_path"] == "/request"
+    assert result["url_path"] == "/request/abc"
     assert result["url_query"] == "query=test"
     assert result["cookies"] == {"session": "123"}
     assert result["body_json"] == {"key": "value"}
@@ -31,7 +32,7 @@ async def test_request_adapter_form_data(http_client: HttpClient) -> None:
         pytest.skip("This framework adapter does not support form data")
 
     response = await http_client.post(
-        "/request?query=test",
+        "/request/abc?query=test",
         data={"form": "data"},
         files={"file": ("test.txt", b"upload", "text/plain")},
         cookies={"session": "123"},
@@ -43,12 +44,13 @@ async def test_request_adapter_form_data(http_client: HttpClient) -> None:
     content_type = cast(Optional[str], result["content_type"])
 
     assert result["query_params"] == {"query": "test"}
+    assert result["path_params"] == {"item_id": "abc"}
     assert result["method"] == "POST"
     assert header_content_type is not None
     assert header_content_type.startswith("multipart/form-data")
     assert content_type is not None
     assert content_type.startswith("multipart/form-data")
-    assert result["url_path"] == "/request"
+    assert result["url_path"] == "/request/abc"
     assert result["url_query"] == "query=test"
     assert result["cookies"] == {"session": "123"}
     assert result["form_value"] == "data"

@@ -17,6 +17,10 @@ class ChaliceHTTPRequestAdapter(SyncHTTPRequestAdapter):
         return self.request.query_params or {}
 
     @property
+    def path_params(self) -> Mapping[str, Any]:
+        return cast(Mapping[str, Any], self.request.uri_params or {})
+
+    @property
     def body(self) -> Union[str, bytes]:
         return self.request.raw_body
 

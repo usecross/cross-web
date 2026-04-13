@@ -15,6 +15,7 @@ async def test_async_http_request_properties() -> None:
     adapter = TestingRequestAdapter(
         method="PUT",
         query_params={"q": "search"},
+        path_params={"user_id": "123"},
         headers={"Authorization": "Bearer token"},
         content_type="application/json",
         url="https://api.example.com/endpoint",
@@ -24,6 +25,7 @@ async def test_async_http_request_properties() -> None:
 
     assert request.method == "PUT"
     assert request.query_params == {"q": "search"}
+    assert request.path_params == {"user_id": "123"}
     assert request.headers == {"Authorization": "Bearer token"}
     assert request.content_type == "application/json"
     assert request.url == "https://api.example.com/endpoint"

@@ -46,6 +46,7 @@ def build_result(
     url = urlsplit(str(adapter.url))
     result: dict[str, object] = {
         "query_params": dict(adapter.query_params),
+        "path_params": dict(adapter.path_params),
         "method": adapter.method,
         "header_content_type": get_content_type(dict(adapter.headers)),
         "content_type": adapter.content_type,
@@ -94,7 +95,7 @@ def create_aiohttp_app() -> Any:
         return web.json_response(payload)
 
     app = web.Application()
-    app.router.add_post("/request", handler)
+    app.router.add_post("/request/{item_id}", handler)
     return app
 
 
@@ -105,8 +106,12 @@ def create_chalice_app() -> Any:
 
     app = Chalice(app_name="cross-web-testing")
 
-    @app.route("/request", methods=["POST"], content_types=["application/json"])
-    def handler() -> dict[str, object]:
+    @app.route(
+        "/request/{item_id}",
+        methods=["POST"],
+        content_types=["application/json"],
+    )
+    def handler(item_id: str) -> dict[str, object]:
         request = app.current_request
         assert request is not None
 
@@ -118,10 +123,11 @@ def create_chalice_app() -> Any:
 
 def create_django_view() -> Any:
     from django.http import HttpRequest, JsonResponse
+    from django.urls import path
 
     from cross_web.request._django import DjangoHTTPRequestAdapter
 
-    def view(request: HttpRequest) -> JsonResponse:
+    def view(request: HttpRequest, item_id: str) -> JsonResponse:
         adapter = DjangoHTTPRequestAdapter(request)
 
         if adapter.content_type == "application/json":
@@ -138,15 +144,17 @@ def create_django_view() -> Any:
 
         return JsonResponse(payload)
 
+    view._cross_web_urlpatterns = (path("request/<str:item_id>", view),)  # type: ignore[attr-defined]
     return view
 
 
 def create_async_django_view() -> Any:
     from django.http import HttpRequest, JsonResponse
+    from django.urls import path
 
     from cross_web.request._django import AsyncDjangoHTTPRequestAdapter
 
-    async def view(request: HttpRequest) -> JsonResponse:
+    async def view(request: HttpRequest, item_id: str) -> JsonResponse:
         adapter = AsyncDjangoHTTPRequestAdapter(request)
 
         if adapter.content_type == "application/json":
@@ -162,6 +170,7 @@ def create_async_django_view() -> Any:
 
         return JsonResponse(payload)
 
+    view._cross_web_urlpatterns = (path("request/<str:item_id>", view),)  # type: ignore[attr-defined]
     return view
 
 
@@ -172,8 +181,8 @@ def create_flask_app() -> Any:
 
     app = Flask(__name__)
 
-    @app.post("/request")
-    def handler() -> dict[str, object]:
+    @app.post("/request/<item_id>")
+    def handler(item_id: str) -> dict[str, object]:
         adapter = FlaskHTTPRequestAdapter(request)
 
         if adapter.content_type == "application/json":
@@ -198,8 +207,8 @@ def create_async_flask_app() -> Any:
 
     app = Flask(__name__)
 
-    @app.post("/request")
-    async def handler() -> dict[str, object]:
+    @app.post("/request/<item_id>")
+    async def handler(item_id: str) -> dict[str, object]:
         adapter = AsyncFlaskHTTPRequestAdapter(request)
 
         if adapter.content_type == "application/json":
@@ -221,8 +230,10 @@ def create_litestar_app() -> Any:
 
     from cross_web.request._litestar import LitestarRequestAdapter
 
-    @post("/request", status_code=200)
-    async def handler(request: Request[Any, Any, Any]) -> dict[str, object]:
+    @post("/request/{item_id:str}", status_code=200)
+    async def handler(
+        request: Request[Any, Any, Any], item_id: str
+    ) -> dict[str, object]:
         adapter = LitestarRequestAdapter(request)
 
         if adapter.content_type == "application/json":
@@ -246,8 +257,8 @@ def create_quart_app() -> Any:
 
     app = Quart(__name__)
 
-    @app.post("/request")
-    async def handler() -> dict[str, object]:
+    @app.post("/request/<item_id>")
+    async def handler(item_id: str) -> dict[str, object]:
         adapter = QuartHTTPRequestAdapter(request)
 
         if adapter.content_type == "application/json":
@@ -274,7 +285,7 @@ def create_sanic_app() -> Any:
 
     app = Sanic(f"CrossWeb_{uuid.uuid4().hex[:8]}")
 
-    async def handler(request: Request) -> JSONResponse:
+    async def handler(request: Request, item_id: str) -> JSONResponse:
         adapter = SanicHTTPRequestAdapter(request)
 
         if adapter.content_type == "application/json":
@@ -290,7 +301,7 @@ def create_sanic_app() -> Any:
 
         return sanic_json(payload)
 
-    app.add_route(handler, "/request", methods=["POST"])
+    app.add_route(handler, "/request/<item_id>", methods=["POST"])
     return app
 
 
@@ -318,4 +329,4 @@ def create_starlette_app() -> Any:
 
         return JSONResponse(payload)
 
-    return Starlette(routes=[Route("/request", handler, methods=["POST"])])
+    return Starlette(routes=[Route("/request/{item_id}", handler, methods=["POST"])])

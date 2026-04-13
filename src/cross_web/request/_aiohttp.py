@@ -55,6 +55,10 @@ class AiohttpHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     def query_params(self) -> QueryParams:
         return cast(QueryParams, self.request.query.copy())  # type: ignore[attr-defined]
 
+    @property
+    def path_params(self) -> Mapping[str, Any]:
+        return cast(Mapping[str, Any], dict(self.request.match_info))
+
     async def get_body(self) -> bytes:
         if self._form_data is not None:
             return b""

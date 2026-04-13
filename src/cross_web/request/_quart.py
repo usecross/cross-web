@@ -17,6 +17,10 @@ class QuartHTTPRequestAdapter(AsyncHTTPRequestAdapter):
         return self.request.args.to_dict()
 
     @property
+    def path_params(self) -> Mapping[str, str]:
+        return cast(Mapping[str, str], self.request.view_args or {})
+
+    @property
     def method(self) -> HTTPMethod:
         return cast("HTTPMethod", self.request.method.upper())
 
