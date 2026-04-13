@@ -1,10 +1,11 @@
-import { createDocsApp, DocsPage, HomePage } from '@usecross/docs'
+import { createDocsApp, DocsPage } from '@usecross/docs'
+import Home from './pages/Home'
 import './styles.css'
 
 createDocsApp({
   pages: {
     'docs/DocsPage': DocsPage,
-    'HomePage': HomePage,
+    'HomePage': Home,
   },
   title: (title) => `${title} - Cross Web`,
 })
