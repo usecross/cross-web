@@ -1,3 +1,4 @@
+from ._apply_cookie import apply_cookie
 from .exceptions import HTTPException
 from .protocols import BaseRequestProtocol
 from .request import AsyncHTTPRequest
@@ -15,6 +16,7 @@ from .response import Cookie, Response
 
 __all__ = [
     "AiohttpHTTPRequestAdapter",
+    "apply_cookie",
     "AsyncDjangoHTTPRequestAdapter",
     "AsyncFlaskHTTPRequestAdapter",
     "AsyncHTTPRequest",

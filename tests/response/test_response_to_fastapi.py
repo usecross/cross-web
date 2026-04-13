@@ -33,9 +33,11 @@ async def test_to_fastapi_with_all_cookie_params() -> None:
         status_code=200, body="Success", headers={"X-Custom": "Header"}, cookies=cookies
     )
 
-    # Mock FastAPI Response
+    # Mock FastAPI Response (spec needed for singledispatch type detection)
     with patch("fastapi.Response") as MockFastAPIResponse:
-        mock_fastapi_response = Mock()
+        from starlette.responses import Response as StarletteResponse
+
+        mock_fastapi_response = Mock(spec=StarletteResponse)
         MockFastAPIResponse.return_value = mock_fastapi_response
 
         result = response.to_fastapi()
@@ -48,10 +50,10 @@ async def test_to_fastapi_with_all_cookie_params() -> None:
         # Verify set_cookie was called for each cookie with all params
         assert mock_fastapi_response.set_cookie.call_count == 2
 
-        # First cookie call
+        # First cookie call (keyword args via singledispatch handler)
         mock_fastapi_response.set_cookie.assert_any_call(
-            "session",
-            "abc123",
+            key="session",
+            value="abc123",
             secure=True,
             path="/api",
             domain="example.com",
@@ -62,8 +64,8 @@ async def test_to_fastapi_with_all_cookie_params() -> None:
 
         # Second cookie call
         mock_fastapi_response.set_cookie.assert_any_call(
-            "prefs",
-            "dark_mode",
+            key="prefs",
+            value="dark_mode",
             secure=False,
             path=None,
             domain=None,

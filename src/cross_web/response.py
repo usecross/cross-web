@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Literal, Mapping, List, Union, cast
+from typing import TYPE_CHECKING, Any, Literal, Mapping, List, Union, cast
 from typing_extensions import Self
 from urllib.parse import urlencode
 
@@ -24,6 +24,12 @@ class Cookie:
     max_age: int | None = None
     httponly: bool = True
     samesite: Literal["lax", "strict", "none"] = "lax"
+
+    def apply(self, response: Any) -> None:
+        """Apply this cookie to a framework-native response object."""
+        from ._apply_cookie import apply_cookie
+
+        apply_cookie(response, self)
 
 
 @dataclass
@@ -68,15 +74,6 @@ class Response:
         )
 
         for cookie in self.cookies or []:
-            response.set_cookie(
-                cookie.name,
-                cookie.value,
-                secure=cookie.secure,
-                path=cookie.path,
-                domain=cookie.domain,
-                max_age=cookie.max_age,
-                httponly=cookie.httponly,
-                samesite=cookie.samesite,
-            )
+            cookie.apply(response)
 
         return response
