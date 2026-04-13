@@ -140,7 +140,7 @@ async def test_async_do_request_handles_streaming_response(
 
         @property
         def content(self) -> bytes:
-            return b""
+            raise AttributeError("This FakeStreamingResponse has no content")
 
     monkeypatch.setattr(
         django_client_module, "StreamingHttpResponse", FakeStreamingResponse

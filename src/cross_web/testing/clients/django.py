@@ -158,11 +158,13 @@ class AsyncDjangoHttpClient(HttpClient):
         except (BadRequest, SuspiciousOperation) as exc:
             return Response(status_code=400, data=str(exc).encode())
 
-        data = response.content
         if isinstance(response, StreamingHttpResponse):
             content = response.streaming_content
+            data = b""
             if isinstance(content, Iterable):
                 data = b"".join(content)
+        else:
+            data = response.content
 
         return Response(
             status_code=response.status_code,
