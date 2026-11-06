@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal, Mapping, List, Union, cast
 from typing_extensions import Self
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 if TYPE_CHECKING:
     from fastapi import Response as FastAPIResponse
@@ -44,7 +44,17 @@ class Response:
         headers = headers or {}
 
         if query_params:
-            url = url + "?" + urlencode(query_params)
+            # Merge into an existing query string instead of appending a second
+            # "?" to it, and keep any fragment after the query.
+            scheme, netloc, path, query, fragment = urlsplit(url)
+            encoded = urlencode(query_params, doseq=True)
+            if encoded:
+                query = f"{query}&{encoded}" if query else encoded
+            merged = urlunsplit((scheme, netloc, path, query, fragment))
+            # urlunsplit drops an empty fragment's "#". Keep it: a Location
+            # without a fragment lets the browser carry the original URL's
+            # fragment over to the destination; an empty one does not.
+            url = f"{merged}#" if url.endswith("#") else merged
 
         return cls(
             status_code=302,
