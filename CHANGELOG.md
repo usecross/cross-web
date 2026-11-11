@@ -1,6 +1,27 @@
 CHANGELOG
 =========
 
+0.8.0 - 2026-11-11
+------------------
+
+This release adds `parse_content_type`, a helper that parses a `Content-Type`
+header value into its media type and a dictionary of parameters.
+
+```python
+from cross_web import parse_content_type
+
+media_type, params = parse_content_type('Multipart/Form-Data; Boundary="a;b"')
+
+assert media_type == "multipart/form-data"
+assert params == {"boundary": "a;b"}
+```
+
+The media type and the parameter names are lowercased, quoted values are
+unquoted, and the parsing is lenient, so it never raises on a malformed
+header.
+
+This release was contributed by [@patrick91](https://github.com/patrick91) in [#24](https://github.com/usecross/cross-web/pull/24)
+
 0.7.1 - 2026-11-06
 ------------------
 
