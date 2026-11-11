@@ -1,3 +1,4 @@
+from .content_type import parse_content_type
 from .exceptions import HTTPException
 from .protocols import BaseRequestProtocol
 from .request import AsyncHTTPRequest, HTTPRequest
@@ -35,4 +36,5 @@ __all__ = [
     "SyncHTTPRequestAdapter",
     "TestingHTTPRequestAdapter",
     "TestingRequestAdapter",
+    "parse_content_type",
 ]
