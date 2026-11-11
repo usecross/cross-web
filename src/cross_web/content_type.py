@@ -1,6 +1,7 @@
 import re
 
 _QUOTED_PAIR = re.compile(r"\\(.)", re.DOTALL)
+_QUOTED_STRING = re.compile(r'"((?:[^"\\]|\\.)*)"', re.DOTALL)
 
 
 def _split_parameters(value: str) -> list[str]:
@@ -36,8 +37,13 @@ def _split_parameters(value: str) -> list[str]:
 
 
 def _unquote(value: str) -> str:
-    if len(value) > 1 and value[0] == '"' and value[-1] == '"':
-        return _QUOTED_PAIR.sub(r"\1", value[1:-1])
+    """Return the content of a quoted string, with its escapes resolved.
+
+    A value that is not one complete quoted string is returned unchanged,
+    including one whose final quote is escaped and so never closes it.
+    """
+    if match := _QUOTED_STRING.fullmatch(value):
+        return _QUOTED_PAIR.sub(r"\1", match.group(1))
 
     return value
 

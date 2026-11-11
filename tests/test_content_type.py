@@ -116,6 +116,9 @@ def test_asterisk_is_part_of_the_parameter_name(
     [
         # a quoted string that is never closed runs to the end of the value
         ('text/plain; a="open; b=1', ("text/plain", {"a": '"open; b=1'})),
+        # an escaped final quote does not close the quoted string either
+        ('text/plain; a="open\\"', ("text/plain", {"a": '"open\\"'})),
+        ('text/plain; a="closed\\\\"', ("text/plain", {"a": "closed\\"})),
         ('text/plain; a="', ("text/plain", {"a": '"'})),
         ('text/plain; a="trailing\\', ("text/plain", {"a": '"trailing\\'})),
         # only a value that is quoted as a whole is unquoted
