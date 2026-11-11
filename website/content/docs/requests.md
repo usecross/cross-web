@@ -45,6 +45,21 @@ async def read_payload(request: Request) -> bytes:
 
 `AsyncHTTPRequest` lets the rest of your code ignore the original framework once the request has been wrapped.
 
+## Parse the content type
+
+`content_type` is the raw header value, so it can carry parameters such as `charset` or `boundary` and can be written in any case. `parse_content_type` splits it into a media type and a dictionary of parameters:
+
+```python
+from cross_web import parse_content_type
+
+media_type, params = parse_content_type("Application/JSON; charset=utf-8")
+
+assert media_type == "application/json"
+assert params == {"charset": "utf-8"}
+```
+
+The media type and the parameter names are lowercased, so they can be compared exactly. Quoted parameter values are returned without their quotes. The parsing is lenient and never raises: a malformed header gives whatever could be read from it, and an empty one gives an empty media type, so pass `request.content_type or ""` when the header may be missing.
+
 ## Use direct adapters at framework boundaries
 
 If you prefer explicit framework adapters, you can instantiate them directly:
