@@ -53,6 +53,7 @@ def build_result(
         "url_path": url.path,
         "url_query": url.query,
         "cookies": normalize_cookies(dict(adapter.cookies)),
+        "client_host": adapter.client_host,
     }
 
     if body_json is not None:

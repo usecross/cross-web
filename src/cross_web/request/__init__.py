@@ -102,6 +102,11 @@ class HTTPRequest:
         """The request cookies."""
         return self._adapter.cookies
 
+    @property
+    def client_host(self) -> Optional[str]:
+        """The client's address as the framework reports it, if known."""
+        return self._adapter.client_host
+
 
 class AsyncHTTPRequest:
     def __init__(self, adapter: AsyncHTTPRequestAdapter) -> None:
@@ -207,6 +212,11 @@ class AsyncHTTPRequest:
     def cookies(self) -> Mapping[str, str]:
         """The request cookies."""
         return self._adapter.cookies
+
+    @property
+    def client_host(self) -> Optional[str]:
+        """The client's address as the framework reports it, if known."""
+        return self._adapter.client_host
 
     async def get_body(self) -> bytes:
         """Return the raw request body as bytes."""

@@ -29,6 +29,7 @@ class TestingHTTPRequestAdapter(SyncHTTPRequestAdapter):
         files: Mapping[str, Any] | None = None,
         url: str = "http://testserver/",
         cookies: Mapping[str, str] | None = None,
+        client_host: str | None = None,
     ) -> None:
         self._method = method
         self._query_params = query_params or {}
@@ -40,6 +41,7 @@ class TestingHTTPRequestAdapter(SyncHTTPRequestAdapter):
         self._files = files or {}
         self._url = url
         self._cookies = cookies or {}
+        self._client_host = client_host
 
     @property
     def method(self) -> HTTPMethod:
@@ -84,6 +86,10 @@ class TestingHTTPRequestAdapter(SyncHTTPRequestAdapter):
     def cookies(self) -> Mapping[str, str]:
         return self._cookies
 
+    @property
+    def client_host(self) -> Optional[str]:
+        return self._client_host
+
 
 class TestingRequestAdapter(AsyncHTTPRequestAdapter):
     __test__ = False
@@ -100,6 +106,7 @@ class TestingRequestAdapter(AsyncHTTPRequestAdapter):
         cookies: Mapping[str, str] | None = None,
         form_data: FormData | None = None,
         json: dict[str, Any] | None = None,
+        client_host: str | None = None,
     ) -> None:
         self._method = method
         self._query_params = query_params or {}
@@ -108,6 +115,7 @@ class TestingRequestAdapter(AsyncHTTPRequestAdapter):
         self._content_type = content_type
         self._url = url
         self._cookies = cookies or {}
+        self._client_host = client_host
         self._form_data = form_data or FormData(files={}, form={})
         self._json = json
 
@@ -147,3 +155,7 @@ class TestingRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def cookies(self) -> Mapping[str, str]:
         return self._cookies
+
+    @property
+    def client_host(self) -> Optional[str]:
+        return self._client_host

@@ -96,6 +96,15 @@ class SyncHTTPRequestAdapter(abc.ABC):
         """The request cookies."""
         raise NotImplementedError
 
+    @property
+    def client_host(self) -> Optional[str]:
+        """The client's address as the framework reports it, if known.
+
+        Behind a proxy this is the proxy's address unless the server is set up
+        to trust its forwarded headers.
+        """
+        return None
+
 
 class AsyncHTTPRequestAdapter(abc.ABC):
     """
@@ -159,3 +168,12 @@ class AsyncHTTPRequestAdapter(abc.ABC):
     def cookies(self) -> Mapping[str, str]:
         """The request cookies."""
         raise NotImplementedError
+
+    @property
+    def client_host(self) -> Optional[str]:
+        """The client's address as the framework reports it, if known.
+
+        Behind a proxy this is the proxy's address unless the server is set up
+        to trust its forwarded headers.
+        """
+        return None

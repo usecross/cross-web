@@ -19,11 +19,23 @@ Every request adapter exposes the same core data:
 - `content_type`
 - `url`
 - `cookies`
+- `client_host`
 
 Async adapters also expose:
 
 - `await get_body()`
 - `await get_form_data()`
+
+## Client address
+
+`client_host` is the client's address as the framework reports it, or `None`
+when the framework doesn't know it. Cross Web doesn't read `X-Forwarded-For`
+itself: behind a proxy, set up your server to trust the proxy's forwarded
+headers (for example `uvicorn --proxy-headers` or Werkzeug's `ProxyFix`), or
+`client_host` is the proxy's address.
+
+Test clients report their own placeholder, such as `127.0.0.1` or `testclient`,
+so don't expect an IP address in tests.
 
 ## Use `AsyncHTTPRequest` in shared code
 

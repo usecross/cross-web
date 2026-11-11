@@ -64,6 +64,10 @@ class FlaskHTTPRequestAdapter(SyncHTTPRequestAdapter):
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies
 
+    @property
+    def client_host(self) -> Optional[str]:
+        return self.request.remote_addr
+
 
 class AsyncFlaskHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     def __init__(self, request: Request) -> None:
@@ -105,3 +109,7 @@ class AsyncFlaskHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies
+
+    @property
+    def client_host(self) -> Optional[str]:
+        return self.request.remote_addr

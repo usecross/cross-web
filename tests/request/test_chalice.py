@@ -110,3 +110,35 @@ def test_chalice_adapter_no_cookies() -> None:
 
     # Should return empty dict when no Cookie header - line 79
     assert adapter.cookies == {}
+
+
+@pytest.mark.parametrize(
+    ("request_context", "expected"),
+    [
+        ({"identity": {"sourceIp": "203.0.113.7"}}, "203.0.113.7"),
+        ({"identity": None}, None),
+        ({}, None),
+    ],
+)
+def test_chalice_adapter_client_host(
+    request_context: dict[str, object], expected: object
+) -> None:
+    from chalice.app import Request
+
+    event = {
+        "headers": {},
+        "multiValueQueryStringParameters": {},
+        "pathParameters": None,
+        "stageVariables": None,
+        "body": "",
+        "isBase64Encoded": False,
+        "requestContext": {
+            "httpMethod": "GET",
+            "resourcePath": "/test",
+            **request_context,
+        },
+    }
+
+    adapter = ChaliceHTTPRequestAdapter(Request(event))
+
+    assert adapter.client_host == expected

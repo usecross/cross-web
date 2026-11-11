@@ -113,3 +113,7 @@ class AiohttpHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies
+
+    @property
+    def client_host(self) -> Optional[str]:
+        return self.request.remote

@@ -90,3 +90,8 @@ class ChaliceHTTPRequestAdapter(SyncHTTPRequestAdapter):
                 cookies[name] = value
 
         return cookies
+
+    @property
+    def client_host(self) -> Optional[str]:
+        identity = self.request.context.get("identity") or {}
+        return identity.get("sourceIp")
