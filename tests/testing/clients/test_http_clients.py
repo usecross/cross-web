@@ -24,6 +24,9 @@ async def test_request_adapter_json(http_client: HttpClient) -> None:
     assert result["url_query"] == "query=test"
     assert result["cookies"] == {"session": "123"}
     assert result["body_json"] == {"key": "value"}
+    # Test clients report their own placeholder, such as 127.0.0.1 or testclient.
+    assert isinstance(result["client_host"], str)
+    assert result["client_host"]
 
 
 @pytest.mark.asyncio

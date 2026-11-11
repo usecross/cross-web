@@ -20,6 +20,7 @@ async def test_async_http_request_properties() -> None:
         content_type="application/json",
         url="https://api.example.com/endpoint",
         cookies={"session_id": "xyz789"},
+        client_host="203.0.113.7",
     )
     request = AsyncHTTPRequest(adapter)
 
@@ -30,6 +31,11 @@ async def test_async_http_request_properties() -> None:
     assert request.content_type == "application/json"
     assert request.url == "https://api.example.com/endpoint"
     assert request.cookies == {"session_id": "xyz789"}
+    assert request.client_host == "203.0.113.7"
+
+
+def test_async_http_request_client_host_defaults_to_none() -> None:
+    assert AsyncHTTPRequest(TestingRequestAdapter()).client_host is None
 
 
 @pytest.mark.asyncio

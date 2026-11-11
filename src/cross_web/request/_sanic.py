@@ -85,3 +85,8 @@ class SanicHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def cookies(self) -> Mapping[str, str]:
         return self.request.cookies
+
+    @property
+    def client_host(self) -> Optional[str]:
+        # The forwarded address when Sanic trusts a proxy, else the peer's.
+        return self.request.client_ip or None

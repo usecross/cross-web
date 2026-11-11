@@ -17,6 +17,7 @@ def test_http_request_properties() -> None:
         files={"upload": "file_content"},
         url="https://api.example.com/endpoint",
         cookies={"session_id": "xyz789"},
+        client_host="203.0.113.7",
     )
     request = HTTPRequest(adapter)
 
@@ -31,6 +32,11 @@ def test_http_request_properties() -> None:
     assert request.files == {"upload": "file_content"}
     assert request.url == "https://api.example.com/endpoint"
     assert request.cookies == {"session_id": "xyz789"}
+    assert request.client_host == "203.0.113.7"
+
+
+def test_http_request_client_host_defaults_to_none() -> None:
+    assert HTTPRequest(TestingHTTPRequestAdapter()).client_host is None
 
 
 def test_http_request_body_and_form_properties() -> None:

@@ -60,3 +60,8 @@ class StarletteRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def cookies(self) -> Mapping[str, str]:
         return cast(Mapping[str, str], self._request.cookies)
+
+    @property
+    def client_host(self) -> Optional[str]:
+        client = self._request.client
+        return client.host if client else None

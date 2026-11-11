@@ -68,6 +68,10 @@ class DjangoHTTPRequestAdapter(SyncHTTPRequestAdapter):
     def cookies(self) -> Mapping[str, str]:
         return cast(Mapping[str, str], self.request.COOKIES)
 
+    @property
+    def client_host(self) -> Optional[str]:
+        return self.request.META.get("REMOTE_ADDR") or None
+
 
 class AsyncDjangoHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     def __init__(self, request: HttpRequest) -> None:
@@ -113,3 +117,7 @@ class AsyncDjangoHTTPRequestAdapter(AsyncHTTPRequestAdapter):
     @property
     def cookies(self) -> Mapping[str, str]:
         return cast(Mapping[str, str], self.request.COOKIES)
+
+    @property
+    def client_host(self) -> Optional[str]:
+        return self.request.META.get("REMOTE_ADDR") or None

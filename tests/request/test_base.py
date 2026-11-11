@@ -1,4 +1,14 @@
-from cross_web.request._base import FormData
+from collections.abc import Mapping
+from typing import Optional, Union
+
+from cross_web.request._base import (
+    AsyncHTTPRequestAdapter,
+    FormData,
+    HTTPMethod,
+    PathParams,
+    QueryParams,
+    SyncHTTPRequestAdapter,
+)
 
 
 def test_form_data_creation() -> None:
@@ -42,3 +52,44 @@ def test_form_data_empty() -> None:
     assert form_data.files == {}
     assert form_data.form == {}
     assert form_data.get("anything") is None
+
+
+class _OlderSyncAdapter(SyncHTTPRequestAdapter):
+    """An adapter written before ``client_host`` existed."""
+
+    method: HTTPMethod = "GET"
+    query_params: QueryParams = {}
+    path_params: PathParams = {}
+    headers: Mapping[str, str] = {}
+    content_type: Optional[str] = None
+    body: Union[str, bytes] = b""
+    post_data: Mapping[str, Union[str, bytes]] = {}
+    files: Mapping[str, object] = {}
+    url = "http://testserver/"
+    cookies: Mapping[str, str] = {}
+
+    def get_form_data(self) -> FormData:
+        return FormData(files={}, form={})
+
+
+class _OlderAsyncAdapter(AsyncHTTPRequestAdapter):
+    """An adapter written before ``client_host`` existed."""
+
+    method: HTTPMethod = "GET"
+    query_params: QueryParams = {}
+    path_params: PathParams = {}
+    headers: Mapping[str, str] = {}
+    content_type: Optional[str] = None
+    url = "http://testserver/"
+    cookies: Mapping[str, str] = {}
+
+    async def get_body(self) -> bytes:
+        return b""
+
+    async def get_form_data(self) -> FormData:
+        return FormData(files={}, form={})
+
+
+def test_adapters_without_client_host_report_none() -> None:
+    assert _OlderSyncAdapter().client_host is None
+    assert _OlderAsyncAdapter().client_host is None
